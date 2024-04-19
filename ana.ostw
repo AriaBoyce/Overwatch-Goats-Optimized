@@ -1,0 +1,45 @@
+import "base.ostw";
+//healing per shot 70->75
+//damage per shot 70->75
+//ammo 15->14
+//sleep dart duration 5->6 seconds
+//sleep dart cooldown 14->12 seconds
+//nade duration 3->4 seconds
+//nade cooldown 12->10 seconds
+//nade healing damage 90->100
+//quick melee damage 40->30
+//remove nano heal
+
+//to get proper damage/healing done with primary, raise of 7.14%
+//to get proper nade damage/healing, raise of 11.11%
+//issue of quick melee then doing 42 or 44 damage
+//fuck it we ball and leave in quick melee damage. git gud
+//will go with raise of 7.14% in damage and healing
+
+void ana_setup()
+{
+    role = 0;
+    //get health to 200 by setting health to 80% in custom game settings
+}
+
+rule: "Ana Sleep Dart"
+Event.OnDamageDealt
+Player.Ana
+if(EventAbility() == Button.Ability1)
+{
+    Wait(3);
+    if(HasStatus(Victim(),Status.Asleep))
+    {
+        ClearStatus(Victim(),Status.Asleep);
+        MinWait();
+        SetStatus(Victim(),null,Status.Asleep,3);
+    }
+}
+
+rule: "Ana Nano Heal"
+Event.OnHealingDealt
+Player.Ana
+if(EventAbility() == Button.Ultimate)
+{
+    Damage(Healee(),null,EventHealing()*2);
+}

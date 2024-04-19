@@ -1,0 +1,85 @@
+globalvar define health_set;
+playervar define role;
+playervar define base_health;
+playervar define base_armor;
+playervar define base_shield;
+playervar define self_move_speed;
+playervar define ult_check;
+
+
+import "rein.ostw";
+rule: "Hud Text"
+Event.OngoingGlobal
+{
+    DisableInspectorRecording();
+    CreateHudText(AllPlayers(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
+}
+
+rule: "Spawn in"
+Event.OngoingPlayer
+if(HasSpawned())
+{
+    if(HeroOf(EventPlayer()) == Hero.Reinhardt)
+    {
+        rein_setup();
+    }
+}
+
+void apply_custom_health() "apply custom health"
+{
+    if (EventPlayer().IsInSpawnRoom())
+    {
+        define temp_position = PositionOf(EventPlayer());
+        MinWait();
+        Teleport(EventPlayer(),ObjectivePosition(0));
+        WaitUntil(EventPlayer().IsInSpawnRoom() == false,10);
+        SetStatus(EventPlayer(),null,Status.Unkillable,10);
+        Damage(EventPlayer(),null,9999999);
+        MinWait();
+
+        AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,9999999,true,true);
+        AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,9999999,true,true);
+        AddHealthPoolToPlayer(EventPlayer(),HealthType.Shields,9999999,true,true);
+
+        MinWait();
+        RemoveAllHealthPoolsFromPlayer(EventPlayer());
+        MinWait();
+
+        if (base_health > 0)
+        {
+            AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,base_health-1,true,true);
+        }
+
+        if (base_armor > 0)
+        {
+            AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,base_armor,true,true);
+        }
+
+        if (base_shield > 0)
+        {
+            AddHealthPoolToPlayer(EventPlayer(),HealthType.Shields,base_shield,true,true);
+        }
+
+        MinWait();
+
+        Teleport(EventPlayer(),temp_position);
+    }
+}
+
+rule: "Create Bot"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(),Button.Interact))
+{
+    DestroyAllDummyBots();
+    CreateDummyBot(Hero.Roadhog,Team.Team2,0,EventPlayer(),EventPlayer());
+    SetUltimateCharge(EventPlayer(),100);
+}
+
+rule: "Damage Test"
+Event.OnDamageDealt
+{
+    SmallMessage(AllPlayers(),EventDamage());
+}
+
+
+//things to change in custom game settings
