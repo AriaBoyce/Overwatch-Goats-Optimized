@@ -1,0 +1,215 @@
+import "base.ostw";
+
+//rally armor 100
+//shield bash cooldown 6 seconds
+//600 shield health
+
+//shield bash cant go through shields
+//50 bash damage
+
+//inspire
+//duration 5 seconds
+//total healing 80
+
+
+//shield regen 85->100
+//cooldown 5->3
+
+//reduced travel distance from 12->7 meters
+
+
+//melee damage 45->35
+playervar define ult_charge;
+playervar define max_ult_charge;
+playervar define brig_shield_location;
+playervar define brig_shield_check;
+playervar define brig_inspire;
+playervar define brig_inspire_ref;
+playervar define brig_pack_ref;
+playervar define brig_rally_ref;
+playervar define brig_rally_timer;
+playervar define brig_rally_armor_ref;
+playervar define brig_rally_armor_amount;
+
+void brig_setup()
+{
+    role = 0;
+    ult_charge = 0;
+    max_ult_charge = 2500;
+    self_move_speed = 100;
+    base_armor = 49.5;
+    base_health = 200;
+    brig_shield_location = EyePosition(EventPlayer())+FacingDirectionOf(EventPlayer())*0.85;
+    SetMaxHealth(EventPlayer(),50);
+    //CreateBeamEffect(EventPlayer(),BeamType.GrappleBeam,brig_shield_location,brig_shield_location+FacingDirectionOf(EventPlayer())*max_ult_charge,Color.White,EffectRev.PositionAndRadius);
+    //CreateHudText(EventPlayer(),"{0} {1}".Format([ult_charge,max_ult_charge]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
+    //ud_ref = CreateHudText(EventPlayer(),null,null,"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n{0}{1}{2}".Format(["                                                                                                                 ","                                                              ",RoundToInteger( EventPlayer().ult_charge/EventPlayer().max_ult_charge*100)]),Location.Left,0,Color.White,Color.Black,Color.White,HudTextRev.String,Spectators.VisibleNever);
+}
+
+rule: "Brig Action"
+Event.OngoingPlayer
+Player.Brigitte
+{
+    //health check
+    if(IsInSpawnRoom() && !IsGameInProgress())
+    {
+        if(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+        {
+            health_set = true;
+            apply_custom_health();
+            health_set = false;
+        }
+    }
+    brig_shield_location = EyePosition(EventPlayer())+FacingDirectionOf(EventPlayer())*0.85;
+    brig_shield_check = IsInLineOfSight(brig_shield_location,brig_shield_location+FacingDirectionOf(EventPlayer())*1.75,BarrierLOS.EnemyBarriersBlock);
+
+    if(IsUsingAbility2())
+    {
+        define temp_players = PlayersInViewAngle(EventPlayer(),TeamOf(EventPlayer()),10);
+        if(temp_players.brig_rally_armor_amount > 0)
+        {
+            RemoveHealthPoolFromPlayer(temp_players.brig_rally_armor_ref);
+            Damage(temp_players,null,0.01);
+            temp_players.brig_rally_armor_ref = AddHealthPoolToPlayer(temp_players,HealthType.Armor,temp_players.brig_rally_armor_amount,false,true);
+        }
+        Damage(temp_players,null,0.01);
+    }
+
+    ult_charge += 5;
+    if(ult_charge > max_ult_charge)
+    {
+        ult_charge = max_ult_charge;
+    }
+    SetUltimateCharge(EventPlayer(),Min(99,ult_charge/max_ult_charge*100));
+
+
+    if(IsButtonHeld(EventPlayer(),Button.Ultimate) && UltimateChargePercent(EventPlayer()) >= 99 && brig_rally_ref == null)
+    {
+        brig_rally_ref = CreateEffect(AllPlayers(),Effect.Ring,Color.Yellow,PositionOf(),10,EffectRev.PositionAndRadius);
+        brig_rally_timer = 10;
+        self_move_speed += 30;
+        BigMessage(AllPlayers(OppositeTeamOf(TeamOf(EventPlayer()))),"RAID BOSS INCOMING");
+        BigMessage(AllPlayers(TeamOf(EventPlayer())),"RALLY TO ME");
+        PlayEffect(AllPlayers(),PlayEffect.BuffExplosionSound,Color.White,EventPlayer(),100);
+        SetMoveSpeed(EventPlayer(),self_move_speed);
+        async brig_rally_1();
+    }
+    MinWait();
+    LoopIf(HeroOf(EventPlayer()) == Hero.Brigitte);
+}
+
+void brig_rally_1() playervar "Brig Rally 1"
+{
+    define list_of_players = PlayersWithinRadius(PositionOf(EventPlayer()),10,TeamOf(EventPlayer()),RadiusLOS.Surfaces);
+    for(define i = 0; i < 6; i++)
+    {
+        if(list_of_players[i] == null)
+        {
+            break;
+        }
+        list_of_players[i].brig_rally_armor_amount += 15;
+        if(list_of_players[i].brig_rally_armor_amount > 150)
+        {
+            list_of_players[i].brig_rally_armor_amount = 150;
+        }
+        RemoveHealthPoolFromPlayer(list_of_players[i].brig_rally_armor_ref);
+        list_of_players[i].brig_rally_armor_ref = AddHealthPoolToPlayer(list_of_players[i],HealthType.Armor,list_of_players[i].brig_rally_armor_amount,false,true);
+    }
+    Wait(1/2);
+    brig_rally_timer -= 0.5;
+    LoopIf(brig_rally_timer != 0);
+    DestroyEffect(brig_rally_ref);
+    brig_rally_ref = null;
+    ult_charge = 0;
+    self_move_speed -= 30;
+    SetMoveSpeed(EventPlayer(),self_move_speed);
+}
+
+rule:"Brig: Reduce Armor From Damage"
+Event.OnDamageTaken
+if(brig_rally_armor_amount > 0)
+{
+	//ignore lucio beat and shield health, leaving armor
+	define temp_damage = EventDamage();
+	temp_damage -= HealthOfType(EventPlayer(),HealthType.Shields);
+    if(temp_damage < 0)
+    {
+        temp_damage = 0;
+    }
+	brig_rally_armor_amount -= temp_damage;
+	if(brig_rally_armor_amount < 0)
+	{
+		brig_rally_armor_amount = 0;
+	}
+}
+
+rule: "Brig Damage"
+Event.OnDamageDealt
+Player.Brigitte
+if(EventDamage() != null)
+{
+    if(EventAbility() == Button.PrimaryFire && IsButtonHeld(Attacker(),Button.SecondaryFire))
+    {
+        if(brig_shield_check)
+        {
+            SetStatus(Victim(),Attacker(),Status.Stunned,1);
+        }
+    }
+    else if (EventAbility() == Button.Ability1)
+    {
+        if (brig_inspire == 0)
+        {
+            brig_inspire = 1;
+        }
+        if(Victim().role == 1)
+        {
+            Victim().boop = 10;
+        }
+        
+    }
+    else if(brig_inspire == 0)
+    {
+        brig_inspire = 1;
+    }
+    ult_charge += EventDamage();
+}
+
+rule: "Brig Inspire"
+Event.OngoingPlayer
+Player.Brigitte
+if(brig_inspire == 1)
+{
+    define list_of_players = PlayersWithinRadius(PositionOf(EventPlayer()),20,TeamOf(EventPlayer()),RadiusLOS.Surfaces);
+    StopHealOverTime(list_of_players.brig_inspire_ref);
+    list_of_players.brig_inspire_ref = StartHealOverTime(list_of_players,EventPlayer(),5,14.5);
+    Wait(1);
+    brig_inspire = 0;
+}
+
+rule: "Brig Repair Pack"
+Event.OnHealingDealt
+Player.Brigitte
+if(EventAbility() == Button.Ability2)
+{
+    SetAbilityCharge(EventPlayer(),Button.Ability2,0);
+    define temp_heal = 150;
+    temp_heal -= Min(MaxHealth(Healee()) - Health(Healee()),150);
+    Heal(Healee(),Healer(),150 - temp_heal);
+    ult_charge += 150 - temp_heal;
+    if(temp_heal > 75)
+    {
+        temp_heal = 75;
+    }
+    brig_pack_ref = AddHealthPoolToPlayer(Healee(),HealthType.Armor,temp_heal,false,true);
+    Wait(5);
+    RemoveHealthPoolFromPlayer(brig_pack_ref);
+    Wait(1);
+    SetAbilityCharge(EventPlayer(),Button.Ability2,3);
+}
+rule: "Brig Healing Ult Tracking"
+Event.OnHealingDealt
+Player.Brigitte
+if(EventAbility() != Button.Ability2)
+{
+    ult_charge += EventHealing();
+}

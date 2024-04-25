@@ -60,7 +60,7 @@ Player.Reinhardt
 
 
     MinWait();
-    LoopIfConditionIsTrue();
+    LoopIf(HeroOf(EventPlayer()) == Hero.Reinhardt);
 }
 rule: "Rein Damage"
 Event.OnDamageDealt
