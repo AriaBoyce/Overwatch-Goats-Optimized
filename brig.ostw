@@ -94,6 +94,16 @@ Player.Brigitte
         SetMoveSpeed(EventPlayer(),self_move_speed);
         async brig_rally_1();
     }
+
+    //brig shield bash distance
+    if(IsButtonHeld(EventPlayer(),Button.SecondaryFire) && IsFiringPrimary())
+    {
+        //self_move_speed -= 50;
+        //SetMoveSpeed(EventPlayer(),self_move_speed);
+        //WaitUntil(!IsFiringPrimary(),10);
+        //self_move_speed += 50;
+        //SetMoveSpeed(EventPlayer(),self_move_speed);
+    }
     MinWait();
     LoopIf(HeroOf(EventPlayer()) == Hero.Brigitte);
 }

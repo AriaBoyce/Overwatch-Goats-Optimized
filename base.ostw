@@ -11,6 +11,7 @@ playervar define hud_ref;
 import "rein.ostw";
 import "ana.ostw";
 import "brig.ostw";
+import "zen.ostw";
 rule: "Hud Text"
 Event.OngoingGlobal
 {
@@ -34,10 +35,15 @@ if(HasSpawned())
     {
         brig_setup();
     }
+    else if(HeroOf(EventPlayer()) == Hero.Zenyatta)
+    {
+        zen_setup();
+    }
 }
 
 rule: "Damage on occassion"
 Event.OngoingPlayer
+if(Health() < MaxHealth())
 {
     Damage(EventPlayer(),null,0.01);
     Heal(EventPlayer(),null,0.01);
@@ -49,7 +55,15 @@ rule: "Got booped"
 Event.OngoingPlayer
 if(boop != 0)
 {
-    ApplyImpulse(EventPlayer(),DirectionTowards(PositionOf(EventPlayer()),PositionOf(EventPlayer())+VelocityOf(EventPlayer())*Vector(1,0,1)),boop,Relative.ToWorld,ContraryMotion.Incorporate);
+    if(boop > 0)
+    {
+        ApplyImpulse(EventPlayer(),DirectionTowards(PositionOf(EventPlayer()),PositionOf(EventPlayer())+VelocityOf(EventPlayer())*Vector(1,0,1)),boop,Relative.ToWorld,ContraryMotion.Incorporate);
+    }
+    else
+    {
+        ApplyImpulse(EventPlayer(),DirectionTowards(PositionOf(EventPlayer()),PositionOf(EventPlayer())+VelocityOf(EventPlayer())*Vector(-1,0,-1)),boop*-1,Relative.ToWorld,ContraryMotion.Incorporate);
+    }
+    
     boop = 0;
 }
 void apply_custom_health() "apply custom health"
@@ -98,7 +112,7 @@ Event.OngoingPlayer
 if(IsButtonHeld(EventPlayer(),Button.Interact))
 {
     DestroyAllDummyBots();
-    CreateDummyBot(Hero.Reinhardt,Team.Team2,0,Vector(0,0,0),EventPlayer());
+    CreateDummyBot(Hero.Reinhardt,Team.Team2,0,EventPlayer(),EventPlayer());
     CreateDummyBot(Hero.Ana,Team.Team1,1,Vector(10,0,0),EventPlayer());
     //SetUltimateCharge(EventPlayer(),100);
     //StartHoldingButton(LastCreatedEntity(),Button.SecondaryFire);
