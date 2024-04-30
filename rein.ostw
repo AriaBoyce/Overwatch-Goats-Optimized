@@ -5,10 +5,11 @@ void rein_setup()
     //shield health 2000
     //shield regen 200 up from 144
     SetMaxHealth(EventPlayer(),(2000/1400)*100);
-
+    SetKnockbackReceived(EventPlayer(),143);
     //armor 200
     //health 300
     base_armor = 200;
+    base_shield = 0;
     base_health = 300;
     self_move_speed = 100;
 
@@ -24,6 +25,7 @@ void rein_setup()
 
     //no tank passive
     role = 1;
+    current_hero = Hero.Reinhardt;
     //CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([IsButtonHeld(EventPlayer(),Button.Ultimate),UltimateChargePercent(EventPlayer()),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
 }
 

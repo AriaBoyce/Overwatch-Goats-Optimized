@@ -6,6 +6,7 @@ playervar define base_shield;
 playervar define self_move_speed;
 playervar define boop;
 playervar define hud_ref;
+playervar define current_hero;
 
 
 import "rein.ostw";
@@ -15,13 +16,13 @@ import "zen.ostw";
 rule: "Hud Text"
 Event.OngoingGlobal
 {
-    DisableInspectorRecording();
+    //DisableInspectorRecording();
     CreateHudText(AllPlayers(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
 }
 
 rule: "Spawn in"
 Event.OngoingPlayer
-if(HasSpawned())
+if(HeroOf(EventPlayer()) != current_hero)
 {
     if(HeroOf(EventPlayer()) == Hero.Reinhardt)
     {
@@ -43,7 +44,7 @@ if(HasSpawned())
 
 rule: "Damage on occassion"
 Event.OngoingPlayer
-if(Health() < MaxHealth())
+if(Health() < MaxHealth()-1)
 {
     Damage(EventPlayer(),null,0.01);
     Heal(EventPlayer(),null,0.01);
@@ -51,26 +52,16 @@ if(Health() < MaxHealth())
     Loop();
 }
 
-rule: "Got booped"
-Event.OngoingPlayer
-if(boop != 0)
-{
-    if(boop > 0)
-    {
-        ApplyImpulse(EventPlayer(),DirectionTowards(PositionOf(EventPlayer()),PositionOf(EventPlayer())+VelocityOf(EventPlayer())*Vector(1,0,1)),boop,Relative.ToWorld,ContraryMotion.Incorporate);
-    }
-    else
-    {
-        ApplyImpulse(EventPlayer(),DirectionTowards(PositionOf(EventPlayer()),PositionOf(EventPlayer())+VelocityOf(EventPlayer())*Vector(-1,0,-1)),boop*-1,Relative.ToWorld,ContraryMotion.Incorporate);
-    }
-    
-    boop = 0;
-}
 void apply_custom_health() "apply custom health"
 {
     if (EventPlayer().IsInSpawnRoom())
     {
+        define temp_pos = EyePosition()+FacingDirectionOf()*1;
+        define temp_face = FacingDirectionOf();
+        StartCamera(EventPlayer(),temp_pos,temp_face,0);
+        RemoveAllHealthPoolsFromPlayer(EventPlayer());
         define temp_position = PositionOf(EventPlayer());
+        MinWait();
         MinWait();
         Teleport(EventPlayer(),ObjectivePosition(0));
         WaitUntil(EventPlayer().IsInSpawnRoom() == false,10);
@@ -104,6 +95,11 @@ void apply_custom_health() "apply custom health"
         MinWait();
 
         Teleport(EventPlayer(),temp_position);
+        WaitUntil(IsInSpawnRoom(),10);
+        SetFacing(EventPlayer(),temp_face);
+        MinWait();
+        MinWait();
+        StopCamera(EventPlayer());
     }
 }
 
@@ -122,11 +118,10 @@ if(IsButtonHeld(EventPlayer(),Button.Interact))
 
 
 
-rule: "Damage Test"
-Event.OnHealingDealt
+rule: "Thing"
+Event.OnDamageDealt
 {
-    //Damage(Healer(),null,EventHealing());
+    SmallMessage(Attacker(),EventDamage());
 }
-
 
 //things to change in custom game settings

@@ -1,5 +1,6 @@
 import "base.ostw";
-
+playervar define discord_target;
+playervar define discord_ref;
 void zen_setup()
 {
     role = 0;
@@ -7,6 +8,10 @@ void zen_setup()
     base_health = 50;
     base_shield = 150;
     base_armor = 0;
+    current_hero = Hero.Zenyatta;
+    SetMaxHealth(EventPlayer(),100);
+    //SetDamageDealt(EventPlayer(),(46/48)*100);
+    SetKnockbackDealt(EventPlayer(),10);
 }
 
 
@@ -24,16 +29,40 @@ Player.Zenyatta
             health_set = false;
         }
     }
+    if(IsUsingAbility2() && discord_target == null)
+    {
+        define temp_list = PlayersInViewAngle(EventPlayer(),OppositeTeamOf(),25);
+        Damage(temp_list,EventPlayer(),0.25);
+    }
+    else if(!IsUsingAbility2())
+    {
+        StopDamageModification(discord_ref);
+        discord_target = null;
+    }
 
     MinWait();
     LoopIf(HeroOf(EventPlayer()) == Hero.Zenyatta);
+    
 }
+
 rule: "Zen Damage"
 Event.OnDamageDealt
 Player.Zenyatta
+if(EventAbility() == null)
 {
-    if(EventAbility() == null)
+    //base damage = 0.2
+    //armor damage = 0.14
+    //nano damage = 0.1
+    //nano armor damage = 0.1
+
+
+    
+    //discord damage = 0.3
+    //discord armor damage = 0.228
+    //discord nano damage = 0.125
+    if(EventDamage() == 0.3 || EventDamage() == 0.228 || EventDamage() == 0.15)
     {
-        Victim().boop = -10;
+        discord_target = Victim();
+        discord_ref = StartDamageModification(Victim(),AllPlayers(),104,DamageModificationRev.None);
     }
 }

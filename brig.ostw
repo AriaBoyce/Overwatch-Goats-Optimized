@@ -37,8 +37,10 @@ void brig_setup()
     ult_charge = 0;
     max_ult_charge = 2500;
     self_move_speed = 100;
-    base_armor = 49.5;
-    base_health = 200;
+    base_armor = 50;
+    base_health = 199.9;
+    base_shield = 0;
+    current_hero = Hero.Brigitte;
     brig_shield_location = EyePosition(EventPlayer())+FacingDirectionOf(EventPlayer())*0.85;
     SetMaxHealth(EventPlayer(),50);
     //CreateBeamEffect(EventPlayer(),BeamType.GrappleBeam,brig_shield_location,brig_shield_location+FacingDirectionOf(EventPlayer())*max_ult_charge,Color.White,EffectRev.PositionAndRadius);
@@ -164,18 +166,6 @@ if(EventDamage() != null)
         {
             SetStatus(Victim(),Attacker(),Status.Stunned,1);
         }
-    }
-    else if (EventAbility() == Button.Ability1)
-    {
-        if (brig_inspire == 0)
-        {
-            brig_inspire = 1;
-        }
-        if(Victim().role == 1)
-        {
-            Victim().boop = 10;
-        }
-        
     }
     else if(brig_inspire == 0)
     {

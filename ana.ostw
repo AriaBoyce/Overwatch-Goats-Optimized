@@ -19,7 +19,29 @@ import "base.ostw";
 void ana_setup()
 {
     role = 0;
+    current_hero = Hero.Ana;
+    base_armor = 0;
+    base_health = 200;
+    base_shield = 0;
     //get health to 200 by setting health to 80% in custom game settings
+}
+
+rule: "Ana Action"
+Event.OngoingPlayer
+Player.Ana
+{
+    //health check
+    if(IsInSpawnRoom() && !IsGameInProgress())
+    {
+        if(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+        {
+            health_set = true;
+            apply_custom_health();
+            health_set = false;
+        }
+    }
+    MinWait();
+    LoopIf(HeroOf(EventPlayer()) == Hero.Ana);
 }
 
 rule: "Ana Sleep Dart"
