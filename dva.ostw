@@ -1,0 +1,93 @@
+import "base.ostw";
+playervar define dva_state;
+playervar define dva_ult_state;
+//move speed penalty while firing 30->50 : Cant do. bug. isfiringprimary doesnt function while dva is in mech
+//boosters cooldown 4->5s
+//call mech damage 250->50
+//micro missles cooldown 7->8s
+//health 400
+//armor 200
+//matrix cooldown 1s
+//regen 12.5->16%
+
+
+void dva_setup()
+{
+    dva_state = 2;
+    base_armor = 200;
+    base_health = 400;
+    base_shield = 0;
+    dva_ult_state = 1;
+    while(MaxHealth() != 600)
+    {
+        health_set = true;
+        apply_custom_health();
+        health_set = false;
+        MinWait();
+        if(IsInAlternateForm())
+        {
+            break;
+        }
+    }
+    Wait(2);
+    CreateHudText(AllPlayers(),"{0}:{1}:{2}".Format([IsUsingUltimate(),dva_ult_state,IsInAlternateForm()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
+    dva_state = 0;
+}
+
+rule: "Dva Action"
+Event.OngoingPlayer
+Player.Dva
+{
+    //health check
+    if(IsInAlternateForm() && dva_state == 0)
+    {
+        while(MaxHealth() != 150)
+        {
+            base_armor = 0;
+            base_health = 150;
+            health_set = true;
+            apply_custom_health();
+            health_set = false;
+            MinWait();
+            if(!IsInAlternateForm())
+            {
+                break;
+            }
+        }
+        dva_state = 1;
+        SetDamageDealt(EventPlayer(),100);
+    }
+    else if(!IsInAlternateForm() && dva_state == 1)
+    {
+        base_armor = 200;
+        base_health = 400;
+        while(MaxHealth() != 600)
+        {
+            health_set = true;
+            apply_custom_health();
+            health_set = false;
+            MinWait();
+            if(IsInAlternateForm())
+            {
+                break;
+            }
+        }
+        dva_state = 0;
+    }
+
+    if(IsUsingUltimate() && IsInAlternateForm() && dva_ult_state == 0)
+    {
+        dva_ult_state = 1;
+        SetDamageDealt(EventPlayer(),20);
+        WaitAsync(duration: 2, action: () =>
+        {
+            SetDamageDealt(EventPlayer(),100);
+        });
+    }
+    else if(!IsUsingUltimate() && IsInAlternateForm())
+    {
+        dva_ult_state = 0;
+    }
+    MinWait();
+    LoopIf(HeroOf(EventPlayer()) == Hero.Dva);
+}
