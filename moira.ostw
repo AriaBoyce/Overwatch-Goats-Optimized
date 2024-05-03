@@ -1,0 +1,106 @@
+import "base.ostw";
+
+playervar define moira_resource;
+playervar define moira_heal_drain;
+playervar define moira_heal_passive;
+playervar define moira_heal_damage;
+playervar define moira_self_heal;
+//ult move speed 40->50%
+
+//orb cooldown 8->10s
+//heal orb heal 250->300
+
+//HPS 70->80
+//energy drain 12.5->11
+//energy gain 3.6->2
+//self heal 20->30
+//dps 60->50
+
+//fade
+//remove super jump
+//cooldown 7->6
+//cant be used during ult
+
+void moira_setup()
+{
+    base_health = 200;
+    moira_resource = 100;
+    moira_heal_drain = (11/156)*100;
+    moira_heal_passive = (3.744/156)*100;
+    moira_heal_damage = (12.14/156)*100;
+    current_hero = Hero.Moira;
+    CreateHudText(AllPlayers(),"{0}:{1}:{2}".Format([moira_resource,heal_test_2,IsUsingAbility2()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
+}
+
+rule: "Moira Action"
+Event.OngoingPlayer
+Player.Moira
+{
+    if(IsInSpawnRoom() && !IsGameInProgress())
+    {
+        if(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+        {
+            health_set = true;
+            apply_custom_health();
+            health_set = false;
+        }
+    }
+    if(IsFiringPrimary())
+    {
+        moira_resource -= moira_heal_drain*tick_rate;
+    }
+    else
+    {
+        moira_resource += moira_heal_passive*tick_rate;
+    }
+
+    if(IsUsingAbility1())
+    {
+        SetJumpVerticalSpeed(EventPlayer(),50);
+    }
+    else if(IsUsingUltimate())
+    {
+        SetAbility1Enabled(EventPlayer(),false);
+        self_move_speed += 7.2;
+        SetMoveSpeed(EventPlayer(),self_move_speed);
+        moira_self_heal = StartDamageOverTime(EventPlayer(),null,100,5);
+        WaitUntil(!IsUsingUltimate(),100);
+        StopDamageOverTime(moira_self_heal);
+        self_move_speed -= 7.2;
+        SetMoveSpeed(EventPlayer(),self_move_speed);
+        SetAbility1Enabled(EventPlayer(),true);
+    }
+    else
+    {
+        SetJumpVerticalSpeed(EventPlayer(),100);
+    }
+
+    if(moira_resource >100)
+    {
+        moira_resource = 100;
+    }
+
+    SetAbilityResource(EventPlayer(),Button.PrimaryFire,moira_resource);
+    Wait(tick_rate);
+    LoopIf(HeroOf(EventPlayer()) == Hero.Moira);
+}
+
+rule: "Moira Damage"
+Event.OnDamageDealt
+Player.Moira
+if(EventAbility() == Button.SecondaryFire)
+{
+    Kill(EventPlayer(),null);
+    moira_resource += moira_heal_damage*tick_rate;
+}
+
+rule: "Moira Heal"
+Event.OnHealingDealt
+Player.Moira
+{
+    //
+    if(EventAbility() == Button.PrimaryFire)
+    {
+        Heal(Healee(),Healer(),EventHealing()*0.14285);
+    }
+}

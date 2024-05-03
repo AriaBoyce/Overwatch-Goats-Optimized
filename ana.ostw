@@ -23,6 +23,9 @@ void ana_setup()
     base_armor = 0;
     base_health = 200;
     base_shield = 0;
+    self_move_speed = 100;
+    Wait(1);
+    //CreateHudText(AllPlayers(),"{0}:{1}:{2}".Format([heal_test,heal_test_2,IsUsingAbility2()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
     //get health to 200 by setting health to 80% in custom game settings
 }
 

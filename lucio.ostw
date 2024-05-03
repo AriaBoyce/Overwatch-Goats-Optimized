@@ -1,0 +1,148 @@
+import "base.ostw";
+
+playervar define team_in_range;
+playervar define team_out_range;
+playervar define team_minus_lucio;
+playervar define heal_test;
+playervar define heal_test_2;
+//beat health 750->500
+//self heal penalty 60->30%
+//base move 25->30%
+//amp move 60->70%
+//no self heal penalty during heal amp
+//boop damage 45->25
+//boop knockback down 12%
+//damage 18->20
+//15.36
+//9.6
+//11.81
+void lucio_setup()
+{
+    team_in_range = null;
+    team_out_range = null;
+    self_move_speed = 100;
+    base_health = 200;
+    current_hero = Hero.Lucio;
+    CreateHudText(AllPlayers(),"{0}:{1}:{2}".Format([heal_test,heal_test_2,IsUsingAbility2()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
+}
+
+rule:"TEST"
+Event.OngoingPlayer
+{
+    heal_test = Health();
+    Wait(1);
+    heal_test_2 = Health()-heal_test;
+    Loop();
+}
+rule: "Lucio Action"
+Event.OngoingPlayer
+Player.Lucio
+{
+    team_minus_lucio = RemoveFromArray(AllPlayers(TeamOf()),EventPlayer());
+    team_in_range = RemoveFromArray(PlayersWithinRadius(PositionOf(),12,TeamOf(),RadiusLOS.SurfacesAndEnemyBarriers),EventPlayer());
+    team_out_range = RemoveFromArray(team_minus_lucio,team_in_range);
+
+    if(IsInSpawnRoom() && !IsGameInProgress())
+    {
+        if(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+        {
+            health_set = true;
+            apply_custom_health();
+            health_set = false;
+        }
+    }
+    //speed boost
+    if(IsInAlternateForm())
+    {
+        if(IsUsingAbility2())//speed amp
+        {
+            self_move_speed += 6.3;
+            SetMoveSpeed(EventPlayer(),self_move_speed);
+            self_move_speed -= 6.3;
+            for(define i = 0; i < 5; i++)
+            {
+                if(team_in_range[i] == null)
+                {
+                    break;
+                }
+                team_in_range[i].self_move_speed += 6.3;
+                SetMoveSpeed(team_in_range[i],team_in_range[i].self_move_speed);
+                team_in_range[i].self_move_speed -= 6.3;
+            }
+            for(define i = 0; i < 5; i++)
+            {
+                if(team_out_range[i] == null)
+                {
+                    break;
+                }
+                SetMoveSpeed(team_out_range[i],team_out_range[i].self_move_speed);
+            }
+        }
+        else//default speed
+        {
+            self_move_speed += 4;
+            SetMoveSpeed(EventPlayer(),self_move_speed);
+            self_move_speed -= 4;
+            for(define i = 0; i < 5; i++)
+            {
+                if(team_in_range[i] == null)
+                {
+                    break;
+                }
+                team_in_range[i].self_move_speed += 4;
+                SetMoveSpeed(team_in_range[i],team_in_range[i].self_move_speed);
+                team_in_range[i].self_move_speed -= 4;
+            }
+
+            for(define i = 0; i < 5; i++)
+            {
+                if(team_out_range[i] == null)
+                {
+                    break;
+                }
+                SetMoveSpeed(team_out_range[i],team_out_range[i].self_move_speed);
+            }
+        }
+
+
+    }
+    else//heal
+    {
+        SetMoveSpeed(EventPlayer(),self_move_speed);
+        for(define i = 0; i < 5; i++)
+        {
+            if(team_minus_lucio[i] == null)
+            {
+                break;
+            }
+            SetMoveSpeed(team_minus_lucio[i],team_minus_lucio[i].self_move_speed);
+        }
+    }
+
+    MinWait();
+    LoopIf(HeroOf(EventPlayer()) == Hero.Lucio);
+}
+
+rule: "Lucio Self Heal"
+Event.OnHealingTaken
+Player.Lucio
+if(EventAbility() != null)
+if(Healer() == EventPlayer())
+if(!IsUsingAbility2())
+{
+    Heal(Healee(),Healee(),EventHealing()*0.23);
+}
+
+rule: "Lucio Damage"
+Event.OnDamageDealt
+Player.Lucio
+{
+    if(EventAbility() == Button.PrimaryFire)
+    {
+        Damage(Victim(),Attacker(),10.1/0.55);
+    }
+    else if(EventAbility() == Button.Melee)
+    {
+        Damage(Victim(),Attacker(),13/0.55);
+    }
+}

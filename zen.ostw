@@ -9,7 +9,6 @@ void zen_setup()
     base_shield = 150;
     base_armor = 0;
     current_hero = Hero.Zenyatta;
-    SetMaxHealth(EventPlayer(),100);
     //SetDamageDealt(EventPlayer(),(46/48)*100);
     SetKnockbackDealt(EventPlayer(),10);
 }

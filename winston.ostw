@@ -1,0 +1,50 @@
+import "base.ostw";
+
+playervar define winston_ult_health;
+
+//shield duration 8->6s
+//shield health 650->600
+//cooldown 12->13
+
+//100 armor
+//400 health
+
+//no secondary fire
+
+//ult damage 50->40
+//primary fire damage 70->60
+
+void winston_setup()
+{
+    base_health = 400;
+    base_armor = 100;
+    SetMaxHealth(EventPlayer(),(600/650)*100);
+    SetDamageDealt(EventPlayer(),(60/70)*100);
+    current_hero = Hero.Winston;
+
+    while(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+    {
+        health_set = true;
+        apply_custom_health();
+        health_set = false;
+        Wait(0.1);
+    }
+}
+
+rule: "Winston Action"
+Event.OngoingPlayer
+Player.Winston
+{
+
+
+    if(IsUsingUltimate())
+    {
+        SetDamageDealt(EventPlayer(),80);
+        winston_ult_health = AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,38,true,true);
+        WaitUntil(!IsUsingUltimate(),100);
+        RemoveHealthPoolFromPlayer(winston_ult_health);
+        SetDamageDealt(EventPlayer(),(60/70)*100);
+    }
+    MinWait();
+    LoopIf(HeroOf(EventPlayer()) == Hero.Winston);
+}

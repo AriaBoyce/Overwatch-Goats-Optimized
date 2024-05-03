@@ -7,12 +7,17 @@ playervar define self_move_speed;
 playervar define boop;
 playervar define hud_ref;
 playervar define current_hero;
+playervar define tick_rate;
 
 
-import "rein.ostw";
+
 import "ana.ostw";
 import "brig.ostw";
 import "dva.ostw";
+import "lucio.ostw";
+import "moira.ostw";
+import "rein.ostw";
+import "winston.ostw";
 import "zen.ostw";
 rule: "Hud Text"
 Event.OngoingGlobal
@@ -25,21 +30,40 @@ rule: "Spawn in"
 Event.OngoingPlayer
 if(HeroOf(EventPlayer()) != current_hero)
 {
-    if(HeroOf(EventPlayer()) == Hero.Reinhardt)
-    {
-        rein_setup();
-    }
-    else if(HeroOf(EventPlayer()) == Hero.Ana)
+    base_armor = 0;
+    base_health = 0;
+    base_shield = 0;
+    self_move_speed = 100;
+    tick_rate = 1/62.5;
+    RemoveAllHealthPoolsFromPlayer(EventPlayer());
+    CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
+    if(HeroOf(EventPlayer()) == Hero.Ana)
     {
         ana_setup();
+    }
+    else if(HeroOf(EventPlayer()) == Hero.Brigitte)
+    {
+        brig_setup();
     }
     else if(HeroOf(EventPlayer()) == Hero.Dva)
     {
         dva_setup();
     }
-    else if(HeroOf(EventPlayer()) == Hero.Brigitte)
+    else if(HeroOf(EventPlayer()) == Hero.Lucio)
     {
-        brig_setup();
+        lucio_setup();
+    }
+    else if(HeroOf(EventPlayer()) == Hero.Moira)
+    {
+        moira_setup();
+    }
+    else if(HeroOf(EventPlayer()) == Hero.Reinhardt)
+    {
+        rein_setup();
+    }
+    else if(HeroOf(EventPlayer()) == Hero.Winston)
+    {
+        winston_setup();
     }
     else if(HeroOf(EventPlayer()) == Hero.Zenyatta)
     {
@@ -162,14 +186,18 @@ Event.OngoingPlayer
 if(IsButtonHeld(EventPlayer(),Button.Interact))
 {
     DestroyAllDummyBots();
-    CreateDummyBot(Hero.Reinhardt,Team.Team2,0,EventPlayer(),EventPlayer());
-    CreateDummyBot(Hero.Ana,Team.Team1,1,Vector(10,0,0),EventPlayer());
+    //CreateDummyBot(Hero.Reinhardt,Team.Team1,1,EventPlayer(),EventPlayer());
+    CreateDummyBot(Hero.Roadhog,Team.Team2,2,EventPlayer(),EventPlayer());
+    //CreateDummyBot(Hero.Dva,Team.Team1,3,EventPlayer(),EventPlayer());
+    //CreateDummyBot(Hero.Winston,Team.Team1,4,EventPlayer(),EventPlayer());
     SetUltimateCharge(EventPlayer(),100);
     //StartHoldingButton(LastCreatedEntity(),Button.SecondaryFire);
     //Wait(1);
-    //Damage(LastCreatedEntity(),null,400);
+    MinWait();
+    //Damage(LastCreatedEntity(),null,190);
 
-    //Damage(EventPlayer(),null,1000);
+    //Damage(EventPlayer(),null,200);
+    heal_test_2 = 0;
 }
 
 
