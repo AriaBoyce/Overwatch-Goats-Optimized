@@ -18,11 +18,12 @@ import "lucio.ostw";
 import "moira.ostw";
 import "rein.ostw";
 import "winston.ostw";
+import "zarya.ostw";
 import "zen.ostw";
 rule: "Hud Text"
 Event.OngoingGlobal
 {
-    //DisableInspectorRecording();
+    DisableInspectorRecording();
     CreateHudText(AllPlayers(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
 }
 
@@ -36,7 +37,7 @@ if(HeroOf(EventPlayer()) != current_hero)
     self_move_speed = 100;
     tick_rate = 1/62.5;
     RemoveAllHealthPoolsFromPlayer(EventPlayer());
-    CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
+    //CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
     if(HeroOf(EventPlayer()) == Hero.Ana)
     {
         ana_setup();
@@ -64,6 +65,10 @@ if(HeroOf(EventPlayer()) != current_hero)
     else if(HeroOf(EventPlayer()) == Hero.Winston)
     {
         winston_setup();
+    }
+    else if(HeroOf(EventPlayer()) == Hero.Zarya)
+    {
+        zarya_setup();
     }
     else if(HeroOf(EventPlayer()) == Hero.Zenyatta)
     {
@@ -197,7 +202,6 @@ if(IsButtonHeld(EventPlayer(),Button.Interact))
     //Damage(LastCreatedEntity(),null,190);
 
     //Damage(EventPlayer(),null,200);
-    heal_test_2 = 0;
 }
 
 

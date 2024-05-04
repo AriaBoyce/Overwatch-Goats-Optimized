@@ -11,6 +11,14 @@ void zen_setup()
     current_hero = Hero.Zenyatta;
     //SetDamageDealt(EventPlayer(),(46/48)*100);
     SetKnockbackDealt(EventPlayer(),10);
+
+    while(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+    {
+        health_set = true;
+        apply_custom_health();
+        health_set = false;
+        Wait(0.1);
+    }
 }
 
 
@@ -18,16 +26,6 @@ rule: "Zen Action"
 Event.OngoingPlayer
 Player.Zenyatta
 {
-    //health check
-    if(IsInSpawnRoom() && !IsGameInProgress())
-    {
-        if(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
-        {
-            health_set = true;
-            apply_custom_health();
-            health_set = false;
-        }
-    }
     if(IsUsingAbility2() && discord_target == null)
     {
         define temp_list = PlayersInViewAngle(EventPlayer(),OppositeTeamOf(),25);
@@ -39,7 +37,7 @@ Player.Zenyatta
         discord_target = null;
     }
 
-    MinWait();
+    Wait(1/10);
     LoopIf(HeroOf(EventPlayer()) == Hero.Zenyatta);
     
 }

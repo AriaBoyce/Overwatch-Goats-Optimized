@@ -29,8 +29,6 @@ void dva_setup()
             break;
         }
     }
-    Wait(2);
-    CreateHudText(AllPlayers(),"{0}:{1}:{2}".Format([IsUsingUltimate(),dva_ult_state,IsInAlternateForm()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
     dva_state = 0;
 }
 
@@ -88,6 +86,6 @@ Player.Dva
     {
         dva_ult_state = 0;
     }
-    MinWait();
+    Wait(0.1);
     LoopIf(HeroOf(EventPlayer()) == Hero.Dva);
 }

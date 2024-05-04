@@ -24,27 +24,15 @@ void ana_setup()
     base_health = 200;
     base_shield = 0;
     self_move_speed = 100;
-    Wait(1);
+    while(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+    {
+        health_set = true;
+        apply_custom_health();
+        health_set = false;
+        Wait(0.1);
+    }
     //CreateHudText(AllPlayers(),"{0}:{1}:{2}".Format([heal_test,heal_test_2,IsUsingAbility2()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
     //get health to 200 by setting health to 80% in custom game settings
-}
-
-rule: "Ana Action"
-Event.OngoingPlayer
-Player.Ana
-{
-    //health check
-    if(IsInSpawnRoom() && !IsGameInProgress())
-    {
-        if(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
-        {
-            health_set = true;
-            apply_custom_health();
-            health_set = false;
-        }
-    }
-    MinWait();
-    LoopIf(HeroOf(EventPlayer()) == Hero.Ana);
 }
 
 rule: "Ana Sleep Dart"

@@ -42,7 +42,14 @@ void brig_setup()
     base_shield = 0;
     current_hero = Hero.Brigitte;
     brig_shield_location = EyePosition(EventPlayer())+FacingDirectionOf(EventPlayer())*0.85;
-    SetMaxHealth(EventPlayer(),50);
+
+    while(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+    {
+        health_set = true;
+        async! apply_custom_health();
+        health_set = false;
+        Wait(0.1);
+    }
     //CreateBeamEffect(EventPlayer(),BeamType.GrappleBeam,brig_shield_location,brig_shield_location+FacingDirectionOf(EventPlayer())*max_ult_charge,Color.White,EffectRev.PositionAndRadius);
     //CreateHudText(EventPlayer(),"{0} {1}".Format([ult_charge,max_ult_charge]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
     //ud_ref = CreateHudText(EventPlayer(),null,null,"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n{0}{1}{2}".Format(["                                                                                                                 ","                                                              ",RoundToInteger( EventPlayer().ult_charge/EventPlayer().max_ult_charge*100)]),Location.Left,0,Color.White,Color.Black,Color.White,HudTextRev.String,Spectators.VisibleNever);
@@ -52,16 +59,6 @@ rule: "Brig Action"
 Event.OngoingPlayer
 Player.Brigitte
 {
-    //health check
-    if(IsInSpawnRoom() && !IsGameInProgress())
-    {
-        if(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
-        {
-            health_set = true;
-            apply_custom_health();
-            health_set = false;
-        }
-    }
     brig_shield_location = EyePosition(EventPlayer())+FacingDirectionOf(EventPlayer())*0.85;
     brig_shield_check = IsInLineOfSight(brig_shield_location,brig_shield_location+FacingDirectionOf(EventPlayer())*1.75,BarrierLOS.EnemyBarriersBlock);
 
@@ -100,11 +97,11 @@ Player.Brigitte
     //brig shield bash distance
     if(IsButtonHeld(EventPlayer(),Button.SecondaryFire) && IsFiringPrimary())
     {
-        //self_move_speed -= 50;
-        //SetMoveSpeed(EventPlayer(),self_move_speed);
-        //WaitUntil(!IsFiringPrimary(),10);
-        //self_move_speed += 50;
-        //SetMoveSpeed(EventPlayer(),self_move_speed);
+        self_move_speed -= 50;
+        SetMoveSpeed(EventPlayer(),self_move_speed);
+        WaitUntil(!IsFiringPrimary(),10);
+        self_move_speed += 50;
+        SetMoveSpeed(EventPlayer(),self_move_speed);
     }
     MinWait();
     LoopIf(HeroOf(EventPlayer()) == Hero.Brigitte);

@@ -29,22 +29,20 @@ void moira_setup()
     moira_heal_passive = (3.744/156)*100;
     moira_heal_damage = (12.14/156)*100;
     current_hero = Hero.Moira;
-    CreateHudText(AllPlayers(),"{0}:{1}:{2}".Format([moira_resource,heal_test_2,IsUsingAbility2()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
+    tick_rate = (1/62.5)*5;
+    while(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+    {
+        health_set = true;
+        apply_custom_health();
+        health_set = false;
+        Wait(0.1);
+    }
 }
 
 rule: "Moira Action"
 Event.OngoingPlayer
 Player.Moira
 {
-    if(IsInSpawnRoom() && !IsGameInProgress())
-    {
-        if(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
-        {
-            health_set = true;
-            apply_custom_health();
-            health_set = false;
-        }
-    }
     if(IsFiringPrimary())
     {
         moira_resource -= moira_heal_drain*tick_rate;

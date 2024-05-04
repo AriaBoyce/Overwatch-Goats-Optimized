@@ -3,8 +3,6 @@ import "base.ostw";
 playervar define team_in_range;
 playervar define team_out_range;
 playervar define team_minus_lucio;
-playervar define heal_test;
-playervar define heal_test_2;
 //beat health 750->500
 //self heal penalty 60->30%
 //base move 25->30%
@@ -23,17 +21,16 @@ void lucio_setup()
     self_move_speed = 100;
     base_health = 200;
     current_hero = Hero.Lucio;
-    CreateHudText(AllPlayers(),"{0}:{1}:{2}".Format([heal_test,heal_test_2,IsUsingAbility2()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
+
+    while(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+    {
+        health_set = true;
+        apply_custom_health();
+        health_set = false;
+        Wait(0.1);
+    }
 }
 
-rule:"TEST"
-Event.OngoingPlayer
-{
-    heal_test = Health();
-    Wait(1);
-    heal_test_2 = Health()-heal_test;
-    Loop();
-}
 rule: "Lucio Action"
 Event.OngoingPlayer
 Player.Lucio
@@ -41,16 +38,6 @@ Player.Lucio
     team_minus_lucio = RemoveFromArray(AllPlayers(TeamOf()),EventPlayer());
     team_in_range = RemoveFromArray(PlayersWithinRadius(PositionOf(),12,TeamOf(),RadiusLOS.SurfacesAndEnemyBarriers),EventPlayer());
     team_out_range = RemoveFromArray(team_minus_lucio,team_in_range);
-
-    if(IsInSpawnRoom() && !IsGameInProgress())
-    {
-        if(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
-        {
-            health_set = true;
-            apply_custom_health();
-            health_set = false;
-        }
-    }
     //speed boost
     if(IsInAlternateForm())
     {
@@ -119,7 +106,7 @@ Player.Lucio
         }
     }
 
-    MinWait();
+    Wait(1/4);
     LoopIf(HeroOf(EventPlayer()) == Hero.Lucio);
 }
 

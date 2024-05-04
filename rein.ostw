@@ -26,6 +26,14 @@ void rein_setup()
     //no tank passive
     role = 1;
     current_hero = Hero.Reinhardt;
+
+    while(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+    {
+        health_set = true;
+        apply_custom_health();
+        health_set = false;
+        Wait(0.1);
+    }
     //CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([IsButtonHeld(EventPlayer(),Button.Ultimate),UltimateChargePercent(EventPlayer()),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
 }
 
@@ -33,16 +41,6 @@ rule: "Rein Action"
 Event.OngoingPlayer
 Player.Reinhardt
 {
-    //health check
-    if(IsInSpawnRoom() && !IsGameInProgress())
-    {
-        if(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
-        {
-            health_set = true;
-            apply_custom_health();
-            health_set = false;
-        }
-    }
     if (IsUsingAbility2())
     {
         //fire strike
@@ -61,7 +59,7 @@ Player.Reinhardt
     }
 
 
-    MinWait();
+    Wait(1/8);
     LoopIf(HeroOf(EventPlayer()) == Hero.Reinhardt);
 }
 rule: "Rein Damage"

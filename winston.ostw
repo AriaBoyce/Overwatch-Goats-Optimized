@@ -35,8 +35,6 @@ rule: "Winston Action"
 Event.OngoingPlayer
 Player.Winston
 {
-
-
     if(IsUsingUltimate())
     {
         SetDamageDealt(EventPlayer(),80);
@@ -45,6 +43,6 @@ Player.Winston
         RemoveHealthPoolFromPlayer(winston_ult_health);
         SetDamageDealt(EventPlayer(),(60/70)*100);
     }
-    MinWait();
+    Wait(1/4);
     LoopIf(HeroOf(EventPlayer()) == Hero.Winston);
 }
