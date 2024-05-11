@@ -38,6 +38,11 @@ Player.Brigitte
     Loop();
 }
 
+rule: "On Death"
+Event.OngoingPlayer
+{
+    
+}
 rule: "Spawn in"
 Event.OngoingPlayer
 if(HeroOf(EventPlayer()) != current_hero)
