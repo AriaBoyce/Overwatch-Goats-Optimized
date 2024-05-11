@@ -15,7 +15,7 @@ void zen_setup()
     while(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
     {
         health_set = true;
-        apply_custom_health();
+        async! apply_custom_health();
         health_set = false;
         Wait(0.1);
     }

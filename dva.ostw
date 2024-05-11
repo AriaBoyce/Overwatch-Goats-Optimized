@@ -21,7 +21,7 @@ void dva_setup()
     while(MaxHealth() != 600)
     {
         health_set = true;
-        apply_custom_health();
+        async! apply_custom_health();
         health_set = false;
         MinWait();
         if(IsInAlternateForm())
@@ -29,6 +29,7 @@ void dva_setup()
             break;
         }
     }
+    SetKnockbackReceived(EventPlayer(),143);
     dva_state = 0;
 }
 
@@ -44,7 +45,7 @@ Player.Dva
             base_armor = 0;
             base_health = 150;
             health_set = true;
-            apply_custom_health();
+            async! apply_custom_health();
             health_set = false;
             MinWait();
             if(!IsInAlternateForm())
@@ -62,7 +63,7 @@ Player.Dva
         while(MaxHealth() != 600)
         {
             health_set = true;
-            apply_custom_health();
+            async!  apply_custom_health();
             health_set = false;
             MinWait();
             if(IsInAlternateForm())

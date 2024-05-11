@@ -74,7 +74,7 @@ Player.Brigitte
         Damage(temp_players,null,0.01);
     }
 
-    ult_charge += 5;
+    ult_charge += 0.1;
     if(ult_charge > max_ult_charge)
     {
         ult_charge = max_ult_charge;
@@ -91,7 +91,15 @@ Player.Brigitte
         BigMessage(AllPlayers(TeamOf(EventPlayer())),"RALLY TO ME");
         PlayEffect(AllPlayers(),PlayEffect.BuffExplosionSound,Color.White,EventPlayer(),100);
         SetMoveSpeed(EventPlayer(),self_move_speed);
-        async brig_rally_1();
+        if(TeamOf(EventPlayer()) == Team.Team1)
+        {
+            async brig_rally_1();
+        }
+        else
+        {
+            async brig_rally_2();
+        }
+        
     }
 
     //brig shield bash distance
@@ -108,6 +116,33 @@ Player.Brigitte
 }
 
 void brig_rally_1() playervar "Brig Rally 1"
+{
+    define list_of_players = PlayersWithinRadius(PositionOf(EventPlayer()),10,TeamOf(EventPlayer()),RadiusLOS.Surfaces);
+    for(define i = 0; i < 6; i++)
+    {
+        if(list_of_players[i] == null)
+        {
+            break;
+        }
+        list_of_players[i].brig_rally_armor_amount += 15;
+        if(list_of_players[i].brig_rally_armor_amount > 150)
+        {
+            list_of_players[i].brig_rally_armor_amount = 150;
+        }
+        RemoveHealthPoolFromPlayer(list_of_players[i].brig_rally_armor_ref);
+        list_of_players[i].brig_rally_armor_ref = AddHealthPoolToPlayer(list_of_players[i],HealthType.Armor,list_of_players[i].brig_rally_armor_amount,false,true);
+    }
+    Wait(1/2);
+    brig_rally_timer -= 0.5;
+    LoopIf(brig_rally_timer != 0);
+    DestroyEffect(brig_rally_ref);
+    brig_rally_ref = null;
+    ult_charge = 0;
+    self_move_speed -= 30;
+    SetMoveSpeed(EventPlayer(),self_move_speed);
+}
+
+void brig_rally_2() playervar "Brig Rally 2"
 {
     define list_of_players = PlayersWithinRadius(PositionOf(EventPlayer()),10,TeamOf(EventPlayer()),RadiusLOS.Surfaces);
     for(define i = 0; i < 6; i++)

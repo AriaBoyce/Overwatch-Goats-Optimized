@@ -24,7 +24,7 @@ rule: "Hud Text"
 Event.OngoingGlobal
 {
     DisableInspectorRecording();
-    CreateHudText(AllPlayers(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
+    CreateHudText(AllPlayers(),null,null,"Server Load: {0}\nAverage: {1}\nPeak: {2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
 }
 
 rule: "Spawn in"
@@ -36,6 +36,7 @@ if(HeroOf(EventPlayer()) != current_hero)
     base_shield = 0;
     self_move_speed = 100;
     tick_rate = 1/62.5;
+    SetKnockbackReceived(EventPlayer(),100);
     RemoveAllHealthPoolsFromPlayer(EventPlayer());
     //CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
     if(HeroOf(EventPlayer()) == Hero.Ana)
@@ -94,12 +95,12 @@ void apply_custom_health() "apply custom health"
         define temp_face = FacingDirectionOf();
         define temp_position = PositionOf(EventPlayer());
         StartCamera(EventPlayer(),temp_pos,temp_face,0);
-
+        SetInvisible(EventPlayer(),InvisibleTo.All);
         RemoveAllHealthPoolsFromPlayer(EventPlayer());
         MinWait();
         MinWait();
 
-        Teleport(EventPlayer(),ObjectivePosition(0));
+        Teleport(EventPlayer(),ObjectivePosition(0)+Vector(0,20,0));
         WaitUntil(EventPlayer().IsInSpawnRoom() == false,10);
 
         SetStatus(EventPlayer(),null,Status.Unkillable,10);
@@ -138,6 +139,7 @@ void apply_custom_health() "apply custom health"
         MinWait();
         StopCamera(EventPlayer());
         ClearStatus(EventPlayer(),Status.Unkillable);
+        SetInvisible(EventPlayer(),InvisibleTo.None);
     }
     else
     {
@@ -175,41 +177,4 @@ void apply_custom_health() "apply custom health"
         MinWait();
     }
 
-    
-
-
-
-
-
-
-
-
 }
-
-rule: "Create Bot"
-Event.OngoingPlayer
-if(IsButtonHeld(EventPlayer(),Button.Interact))
-{
-    DestroyAllDummyBots();
-    //CreateDummyBot(Hero.Reinhardt,Team.Team1,1,EventPlayer(),EventPlayer());
-    CreateDummyBot(Hero.Roadhog,Team.Team2,2,EventPlayer(),EventPlayer());
-    //CreateDummyBot(Hero.Dva,Team.Team1,3,EventPlayer(),EventPlayer());
-    //CreateDummyBot(Hero.Winston,Team.Team1,4,EventPlayer(),EventPlayer());
-    SetUltimateCharge(EventPlayer(),100);
-    //StartHoldingButton(LastCreatedEntity(),Button.SecondaryFire);
-    //Wait(1);
-    MinWait();
-    //Damage(LastCreatedEntity(),null,190);
-
-    //Damage(EventPlayer(),null,200);
-}
-
-
-
-rule: "Thing"
-Event.OnDamageDealt
-{
-    SmallMessage(Attacker(),EventDamage());
-}
-
-//things to change in custom game settings
