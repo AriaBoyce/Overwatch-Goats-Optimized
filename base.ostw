@@ -24,7 +24,18 @@ rule: "Hud Text"
 Event.OngoingGlobal
 {
     DisableInspectorRecording();
-    CreateHudText(AllPlayers(),null,null,"Server Load: {0}\nAverage: {1}\nPeak: {2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
+    CreateHudText(AllPlayers(),null,null,"Server Load: {0}\nAverage: {1}\nPeak: {2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),Location.Right,0,Color.White,Color.White,Color.White,HudTextRev.VisibleToAndString,Spectators.VisibleAlways);
+}
+
+rule: "Manual Brig Ult"
+Event.OngoingPlayer
+Player.Brigitte
+{
+    StartHoldingButton(EventPlayer(),Button.Ultimate);
+    MinWait();
+    StopHoldingButton(EventPlayer(),Button.Ultimate);
+    Wait(5);
+    Loop();
 }
 
 rule: "Spawn in"

@@ -35,7 +35,7 @@ void brig_setup()
 {
     role = 0;
     ult_charge = 0;
-    max_ult_charge = 2500;
+    max_ult_charge = 500;
     self_move_speed = 100;
     base_armor = 50;
     base_health = 199.9;
