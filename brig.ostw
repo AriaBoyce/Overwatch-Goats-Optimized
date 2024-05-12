@@ -30,12 +30,16 @@ playervar define brig_rally_ref;
 playervar define brig_rally_timer;
 playervar define brig_rally_armor_ref;
 playervar define brig_rally_armor_amount;
+playervar define brig_passive_ult_gain;
+playervar define brig_ult_gain_scalar;
 
 void brig_setup()
 {
     role = 0;
     ult_charge = 0;
-    max_ult_charge = 500;
+    max_ult_charge = 2500;
+    brig_passive_ult_gain = WorkshopSettingReal("Settings","Brig Passive Ult Gain",1,0,2,0);
+    brig_ult_gain_scalar = WorkshopSettingReal("Settings","Brig Ult Scalar",1,0,2,1);
     self_move_speed = 100;
     base_armor = 50;
     base_health = 199.9;
@@ -74,7 +78,7 @@ Player.Brigitte
         Damage(temp_players,null,0.01);
     }
 
-    ult_charge += 0.1;
+    ult_charge += 0.1*brig_passive_ult_gain;
     if(ult_charge > max_ult_charge)
     {
         ult_charge = max_ult_charge;
@@ -203,7 +207,7 @@ if(EventDamage() != null)
     {
         brig_inspire = 1;
     }
-    ult_charge += EventDamage();
+    ult_charge += EventDamage()*brig_ult_gain_scalar;
 }
 
 rule: "Brig Inspire"
@@ -243,5 +247,5 @@ Event.OnHealingDealt
 Player.Brigitte
 if(EventAbility() != Button.Ability2)
 {
-    ult_charge += EventHealing();
+    ult_charge += EventHealing()*brig_ult_gain_scalar;
 }
