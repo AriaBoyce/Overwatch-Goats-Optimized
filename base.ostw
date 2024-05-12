@@ -8,7 +8,9 @@ playervar define boop;
 playervar define hud_ref;
 playervar define current_hero;
 playervar define tick_rate;
-
+playervar define setup_complete;
+playervar define debug_text;
+globalvar define debug_mode;
 
 
 import "ana.ostw";
@@ -23,8 +25,16 @@ import "zen.ostw";
 rule: "Hud Text"
 Event.OngoingGlobal
 {
+    debug_mode = true;
     DisableInspectorRecording();
-    CreateHudText(AllPlayers(),null,null,"Server Load: {0}\nAverage: {1}\nPeak: {2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),Location.Right,0,Color.White,Color.White,Color.White,HudTextRev.VisibleToAndString,Spectators.VisibleAlways);
+    Wait(5);
+    SetMatchTime(5);
+    Wait(7);
+    SetMatchTime(1);
+    if(debug_mode)
+    {
+        CreateHudText(AllPlayers(),null,null,"Server Load: {0}\nAverage: {1}\nPeak: {2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),Location.Right,0,Color.White,Color.White,Color.White,HudTextRev.VisibleToAndString,Spectators.VisibleAlways);
+    }
 }
 
 rule: "Manual Brig Ult"
@@ -41,7 +51,8 @@ Player.Brigitte
 rule: "On Death"
 Event.OngoingPlayer
 {
-    
+    ult_charge = 0;
+    brig_rally_timer = 0;
 }
 rule: "Spawn in"
 Event.OngoingPlayer
@@ -53,7 +64,19 @@ if(HeroOf(EventPlayer()) != current_hero)
     self_move_speed = 100;
     tick_rate = 1/62.5;
     SetKnockbackReceived(EventPlayer(),100);
+    //remove health pools
     RemoveAllHealthPoolsFromPlayer(EventPlayer());
+    MinWait();
+    SetMaxHealth(EventPlayer(),100.1);
+    MinWait();
+    SetMaxHealth(EventPlayer(),100);
+    Heal(EventPlayer(),null,10000);
+    DestroyHudText(debug_text);
+    if(debug_mode)
+    {
+        debug_text = CreateHudText(EventPlayer(),null,null,"{0}\n{1}\n{2}".Format([$"Current Hero: {HeroOf()}\nStored Hero: {current_hero}\nMax Health: {MaxHealthOfType(EventPlayer(),HealthType.Health)}", $"Max Armor: {MaxHealthOfType(EventPlayer(),HealthType.Armor)}\nMax Shields: {MaxHealthOfType(EventPlayer(),HealthType.Shields)}\nGoal Health: {base_health}", $"Goal Armor: {base_armor}\nGoal Shields: {base_shield}"]),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.DefaultVisibility);
+    }
+    
     //CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
     if(HeroOf(EventPlayer()) == Hero.Ana)
     {
@@ -91,7 +114,22 @@ if(HeroOf(EventPlayer()) != current_hero)
     {
         zen_setup();
     }
+    current_hero = HeroOf(EventPlayer());
+    setup_complete = true;
 }
+
+rule: "Inbetween rounds"
+Event.OngoingPlayer
+if(!IsGameInProgress())
+{
+    if(setup_complete == true)
+    {
+        Wait(10);
+        setup_complete = false;
+        current_hero = null;
+    }
+}
+
 
 rule: "Damage on occassion"
 Event.OngoingPlayer
