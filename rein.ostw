@@ -5,7 +5,7 @@ void rein_setup()
     //shield health 2000
     //shield regen 200 up from 144
     SetMaxHealth(EventPlayer(),(2000/1400)*100);
-    SetKnockbackReceived(EventPlayer(),143);
+    SetKnockbackReceived(EventPlayer(),200);
     //armor 200
     //health 300
     base_armor = 200;

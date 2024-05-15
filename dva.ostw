@@ -18,6 +18,7 @@ void dva_setup()
     base_health = 400;
     base_shield = 0;
     dva_ult_state = 1;
+    role = 1;
     while(MaxHealth() != 600)
     {
         health_set = true;
@@ -29,7 +30,7 @@ void dva_setup()
             break;
         }
     }
-    SetKnockbackReceived(EventPlayer(),143);
+    SetKnockbackReceived(EventPlayer(),200);
     dva_state = 0;
 }
 

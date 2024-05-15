@@ -207,7 +207,11 @@ if(EventDamage() != null)
     {
         brig_inspire = 1;
     }
-    ult_charge += EventDamage()*brig_ult_gain_scalar;
+    if(IsGameInProgress())
+    {
+        ult_charge += EventDamage()*brig_ult_gain_scalar;
+    }
+    
 }
 
 rule: "Brig Inspire"

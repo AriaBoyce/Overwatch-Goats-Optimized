@@ -21,7 +21,8 @@ void winston_setup()
     SetMaxHealth(EventPlayer(),(600/650)*100);
     SetDamageDealt(EventPlayer(),(60/70)*100);
     current_hero = Hero.Winston;
-    SetKnockbackReceived(EventPlayer(),143);
+    role = 1;
+    SetKnockbackReceived(EventPlayer(),200);
 
     while(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
     {

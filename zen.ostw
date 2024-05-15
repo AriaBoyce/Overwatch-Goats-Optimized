@@ -9,6 +9,7 @@ void zen_setup()
     base_shield = 150;
     base_armor = 0;
     current_hero = Hero.Zenyatta;
+    max_shield_health = 150;
     //SetDamageDealt(EventPlayer(),(46/48)*100);
     SetKnockbackDealt(EventPlayer(),10);
 
@@ -37,11 +38,33 @@ Player.Zenyatta
         discord_target = null;
     }
 
+    if(current_shield_health < max_shield_health)
+    {
+        time_since_damage_shield += 1/10;
+        if(time_since_damage_shield >= 3)
+        {
+            Heal(EventPlayer(),null,Min(2,max_shield_health-current_shield_health));
+            current_shield_health += Min(2,max_shield_health-current_shield_health);
+            if(current_shield_health > max_shield_health)
+            {
+                current_shield_health = max_shield_health;
+            }
+        }
+    }
+
     Wait(1/10);
     LoopIf(HeroOf(EventPlayer()) == Hero.Zenyatta);
     
 }
 
+rule: "Zen Took Damage"
+Event.OnDamageTaken
+Player.Zenyatta
+if(Attacker() != Victim())
+{
+	time_since_damage_shield = 0;
+	current_shield_health = HealthOfType(EventPlayer(),HealthType.Shields);
+}
 rule: "Zen Damage"
 Event.OnDamageDealt
 Player.Zenyatta

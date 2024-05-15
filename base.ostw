@@ -11,7 +11,10 @@ playervar define tick_rate;
 playervar define setup_complete;
 playervar define debug_text;
 globalvar define debug_mode;
-
+playervar define armor_tracking;
+playervar define current_shield_health;
+playervar define max_shield_health;
+playervar define time_since_damage_shield;
 
 import "ana.ostw";
 import "brig.ostw";
@@ -25,6 +28,7 @@ import "zen.ostw";
 rule: "Hud Text"
 Event.OngoingGlobal
 {
+    
     debug_mode = true;
     DisableInspectorRecording();
     Wait(5);
@@ -35,17 +39,6 @@ Event.OngoingGlobal
     {
         CreateHudText(AllPlayers(),null,null,"Server Load: {0}\nAverage: {1}\nPeak: {2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),Location.Right,0,Color.White,Color.White,Color.White,HudTextRev.VisibleToAndString,Spectators.VisibleAlways);
     }
-}
-
-rule: "Manual Brig Ult"
-Event.OngoingPlayer
-Player.Brigitte
-{
-    StartHoldingButton(EventPlayer(),Button.Ultimate);
-    MinWait();
-    StopHoldingButton(EventPlayer(),Button.Ultimate);
-    Wait(5);
-    Loop();
 }
 
 rule: "On Death"
@@ -62,6 +55,7 @@ if(HeroOf(EventPlayer()) != current_hero)
     base_health = 0;
     base_shield = 0;
     self_move_speed = 100;
+    role = 0;
     tick_rate = 1/62.5;
     SetKnockbackReceived(EventPlayer(),100);
     //remove health pools
@@ -116,6 +110,7 @@ if(HeroOf(EventPlayer()) != current_hero)
     }
     current_hero = HeroOf(EventPlayer());
     setup_complete = true;
+    armor_tracking = HealthOfType(EventPlayer(),HealthType.Armor);
 }
 
 rule: "Inbetween rounds"
@@ -133,12 +128,39 @@ if(!IsGameInProgress())
 
 rule: "Damage on occassion"
 Event.OngoingPlayer
-if(Health() < MaxHealth()-1)
+if(Health() < MaxHealth())
 {
     Damage(EventPlayer(),null,0.01);
     Heal(EventPlayer(),null,0.01);
     Wait(2.4);
-    Loop();
+    LoopIfConditionIsTrue();
+}
+
+rule: "Testing"
+Event.OnDamageDealt
+{
+    SmallMessage(Attacker(),EventDamage());
+}
+
+rule: "Armor Tracking and tank headshot"
+Event.OnDamageTaken
+if(role == 1)
+{
+    if(EventWasCriticalHit())
+    {
+        //increase headshot damage
+
+        if(armor_tracking > 0)
+        {
+            //armor is involved
+            Damage(Victim(),Attacker(),((EventDamage()+5)/0.75)-5);
+        }
+        else
+        {
+            //no armor
+            Damage(Victim(),Attacker(),EventDamage()/0.75);
+        }
+    }
 }
 
 void apply_custom_health() "apply custom health"
