@@ -21,9 +21,7 @@ void dva_setup()
     role = 1;
     while(MaxHealth() != 600)
     {
-        health_set = true;
         async! apply_custom_health();
-        health_set = false;
         MinWait();
         if(IsInAlternateForm())
         {
@@ -45,9 +43,7 @@ Player.Dva
         {
             base_armor = 0;
             base_health = 150;
-            health_set = true;
             async! apply_custom_health();
-            health_set = false;
             MinWait();
             if(!IsInAlternateForm())
             {
@@ -73,6 +69,7 @@ Player.Dva
             }
         }
         dva_state = 0;
+        SetDamageDealt(EventPlayer(),100);
     }
 
     if(IsUsingUltimate() && IsInAlternateForm() && dva_ult_state == 0)

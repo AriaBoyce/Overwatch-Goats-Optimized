@@ -15,6 +15,8 @@ playervar define armor_tracking;
 playervar define current_shield_health;
 playervar define max_shield_health;
 playervar define time_since_damage_shield;
+globalvar define average_value;
+globalvar define average_count;
 
 import "ana.ostw";
 import "brig.ostw";
@@ -31,13 +33,15 @@ Event.OngoingGlobal
     
     debug_mode = true;
     DisableInspectorRecording();
-    Wait(5);
-    SetMatchTime(5);
-    Wait(7);
-    SetMatchTime(1);
+    //Wait(5);
+    //SetMatchTime(5);
+    //Wait(7);
+    //SetMatchTime(1);
+    //Wait(2);
+    //SetMatchTime(5);
     if(debug_mode)
     {
-        CreateHudText(AllPlayers(),null,null,"Server Load: {0}\nAverage: {1}\nPeak: {2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),Location.Right,0,Color.White,Color.White,Color.White,HudTextRev.VisibleToAndString,Spectators.VisibleAlways);
+        CreateHudText(null,null,null,"Server Load: {0}\nAverage: {1}\nPeak: {2}".Format([average_value,ServerLoadAverage(),ServerLoadPeak()]),Location.Right,0,Color.White,Color.White,Color.White,HudTextRev.VisibleToAndString,Spectators.VisibleAlways);
     }
 }
 
@@ -47,6 +51,62 @@ Event.OngoingPlayer
     ult_charge = 0;
     brig_rally_timer = 0;
 }
+/*
+rule: "Random Actions"
+Event.OngoingPlayer
+{
+    WaitUntil(IsOnObjective(EventPlayer()),1000);
+    define temp = RandomInteger(0,8);
+    switch(temp)
+    {
+        case 0:
+        {
+            StartHoldingButton(EventPlayer(),Button.Ability1);
+        }
+        case 1:
+        {
+            StartHoldingButton(EventPlayer(),Button.Ability2);
+        }
+        case 2:
+        {
+            StartHoldingButton(EventPlayer(),Button.Crouch);
+        }
+        case 3:
+        {
+            StartHoldingButton(EventPlayer(),Button.Jump);
+        }
+        case 4:
+        {
+            StartHoldingButton(EventPlayer(),Button.Melee);
+        }
+        case 5:
+        {
+            StartHoldingButton(EventPlayer(),Button.PrimaryFire);
+        }
+        case 6:
+        {
+            StartHoldingButton(EventPlayer(),Button.SecondaryFire);
+        }
+        case 7:
+        {
+            StartHoldingButton(EventPlayer(),Button.Ultimate);
+        }
+        case 8:
+        {
+            StopHoldingButton(EventPlayer(),Button.Ability1);
+            StopHoldingButton(EventPlayer(),Button.Ability2);
+            StopHoldingButton(EventPlayer(),Button.Crouch);
+            StopHoldingButton(EventPlayer(),Button.Jump);
+            StopHoldingButton(EventPlayer(),Button.Melee);
+            StopHoldingButton(EventPlayer(),Button.PrimaryFire);
+            StopHoldingButton(EventPlayer(),Button.SecondaryFire);
+            StopHoldingButton(EventPlayer(),Button.Ultimate);
+        }
+    }
+    Wait(1/10);
+    Loop();
+}
+*/
 rule: "Spawn in"
 Event.OngoingPlayer
 if(HeroOf(EventPlayer()) != current_hero)
@@ -59,18 +119,11 @@ if(HeroOf(EventPlayer()) != current_hero)
     tick_rate = 1/62.5;
     SetKnockbackReceived(EventPlayer(),100);
     //remove health pools
-    RemoveAllHealthPoolsFromPlayer(EventPlayer());
-    MinWait();
-    SetMaxHealth(EventPlayer(),100.1);
-    MinWait();
-    SetMaxHealth(EventPlayer(),100);
-    Heal(EventPlayer(),null,10000);
     DestroyHudText(debug_text);
     if(debug_mode)
     {
-        debug_text = CreateHudText(EventPlayer(),null,null,"{0}\n{1}\n{2}".Format([$"Current Hero: {HeroOf()}\nStored Hero: {current_hero}\nMax Health: {MaxHealthOfType(EventPlayer(),HealthType.Health)}", $"Max Armor: {MaxHealthOfType(EventPlayer(),HealthType.Armor)}\nMax Shields: {MaxHealthOfType(EventPlayer(),HealthType.Shields)}\nGoal Health: {base_health}", $"Goal Armor: {base_armor}\nGoal Shields: {base_shield}"]),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.DefaultVisibility);
+        //debug_text = CreateHudText(EventPlayer(),null,null,"{0}\n{1}\n{2}".Format([$"Current Hero: {HeroOf()}\nStored Hero: {current_hero}\nMax Health: {MaxHealthOfType(EventPlayer(),HealthType.Health)}", $"Max Armor: {MaxHealthOfType(EventPlayer(),HealthType.Armor)}\nMax Shields: {MaxHealthOfType(EventPlayer(),HealthType.Shields)}\nGoal Health: {base_health}", $"Goal Armor: {base_armor}\nGoal Shields: {base_shield}"]),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.DefaultVisibility);
     }
-    
     //CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
     if(HeroOf(EventPlayer()) == Hero.Ana)
     {
@@ -113,13 +166,28 @@ if(HeroOf(EventPlayer()) != current_hero)
     armor_tracking = HealthOfType(EventPlayer(),HealthType.Armor);
 }
 
+rule: "thing"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(),Button.Interact))
+{
+    SetStatus(AllPlayers(),null,Status.Unkillable,1000);
+}
 rule: "Inbetween rounds"
 Event.OngoingPlayer
 if(!IsGameInProgress())
 {
     if(setup_complete == true)
     {
+        Respawn(AllDeadPlayers());
+        AllPlayers().brig_rally_armor_amount = 0;
         Wait(10);
+        WaitUntil(IsInSpawnRoom(EventPlayer()),100);
+        RemoveAllHealthPoolsFromPlayer();
+        MinWait();
+        SetMaxHealth(EventPlayer(),100.1);
+        MinWait();
+        SetMaxHealth(EventPlayer(),100);
+        Heal(EventPlayer(),null,999999);
         setup_complete = false;
         current_hero = null;
     }
@@ -134,12 +202,6 @@ if(Health() < MaxHealth())
     Heal(EventPlayer(),null,0.01);
     Wait(2.4);
     LoopIfConditionIsTrue();
-}
-
-rule: "Testing"
-Event.OnDamageDealt
-{
-    SmallMessage(Attacker(),EventDamage());
 }
 
 rule: "Armor Tracking and tank headshot"
@@ -164,93 +226,58 @@ if(role == 1)
 }
 
 void apply_custom_health() "apply custom health"
+{   
+    
+    SetHealingReceived(EventPlayer(),0);
+    RemoveAllHealthPoolsFromPlayer(EventPlayer());
+    MinWait();
+    SetStatus(EventPlayer(),null,Status.Unkillable,5);
+    MinWait();
+    Damage(EventPlayer(),null,9999999);
+    SetPlayerHealth(EventPlayer(),1);
+    MinWait();
+
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,9999999,true,true);
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,9999999,true,true);
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Shields,9999999,true,true);
+
+    MinWait();
+    RemoveAllHealthPoolsFromPlayer(EventPlayer());
+    MinWait();
+    SetHealingReceived(EventPlayer(),100);
+    Heal(EventPlayer(),null,10000);
+    MinWait();
+
+    if (base_health > 0)
+    {
+        AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,base_health-1,true,true);
+    }
+
+    if (base_armor > 0)
+    {
+        AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,base_armor,true,true);
+    }
+
+    if (base_shield > 0)
+    {
+        AddHealthPoolToPlayer(EventPlayer(),HealthType.Shields,base_shield,true,true);
+    }
+    ClearStatus(EventPlayer(),Status.Unkillable);
+    MinWait();
+}
+
+
+rule: "Average of Average Tracking"
+Event.OngoingGlobal
 {
-    if(EventPlayer().IsInSpawnRoom())
+    if(ServerLoadAverage() > 50)
     {
-        define temp_pos = EyePosition()+FacingDirectionOf()*1;
-        define temp_face = FacingDirectionOf();
-        define temp_position = PositionOf(EventPlayer());
-        StartCamera(EventPlayer(),temp_pos,temp_face,0);
-        SetInvisible(EventPlayer(),InvisibleTo.All);
-        RemoveAllHealthPoolsFromPlayer(EventPlayer());
-        MinWait();
-        MinWait();
-
-        Teleport(EventPlayer(),ObjectivePosition(0)+Vector(0,20,0));
-        WaitUntil(EventPlayer().IsInSpawnRoom() == false,10);
-
-        SetStatus(EventPlayer(),null,Status.Unkillable,10);
-        Damage(EventPlayer(),null,9999999);
-        MinWait();
-
-        AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,9999999,true,true);
-        AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,9999999,true,true);
-        AddHealthPoolToPlayer(EventPlayer(),HealthType.Shields,9999999,true,true);
-
-        MinWait();
-        RemoveAllHealthPoolsFromPlayer(EventPlayer());
-        MinWait();
-
-        if (base_health > 0)
-        {
-            AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,base_health-1,true,true);
-        }
-
-        if (base_armor > 0)
-        {
-            AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,base_armor,true,true);
-        }
-
-        if (base_shield > 0)
-        {
-            AddHealthPoolToPlayer(EventPlayer(),HealthType.Shields,base_shield,true,true);
-        }
-
-        MinWait();
-
-        Teleport(EventPlayer(),temp_position);
-        WaitUntil(IsInSpawnRoom(),10);
-        SetFacing(EventPlayer(),temp_face);
-        MinWait();
-        MinWait();
-        StopCamera(EventPlayer());
-        ClearStatus(EventPlayer(),Status.Unkillable);
-        SetInvisible(EventPlayer(),InvisibleTo.None);
-    }
-    else
-    {
-        RemoveAllHealthPoolsFromPlayer(EventPlayer());
-        MinWait();
-        MinWait();
-
-        SetStatus(EventPlayer(),null,Status.Unkillable,1);
-        Damage(EventPlayer(),null,9999999);
-        MinWait();
-
-        AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,9999999,true,true);
-        AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,9999999,true,true);
-        AddHealthPoolToPlayer(EventPlayer(),HealthType.Shields,9999999,true,true);
-
-        MinWait();
-        RemoveAllHealthPoolsFromPlayer(EventPlayer());
-        MinWait();
-
-        if (base_health > 0)
-        {
-            AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,base_health-1,true,true);
-        }
-
-        if (base_armor > 0)
-        {
-            AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,base_armor,true,true);
-        }
-
-        if (base_shield > 0)
-        {
-            AddHealthPoolToPlayer(EventPlayer(),HealthType.Shields,base_shield,true,true);
-        }
-        ClearStatus(EventPlayer(),Status.Unkillable);
-        MinWait();
+        average_value *= average_count;
+        average_value += ServerLoadAverage();
+        average_count++;
+        average_value /= average_count;
     }
 
+    Wait(1);
+    Loop();
 }

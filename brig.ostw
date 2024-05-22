@@ -47,12 +47,10 @@ void brig_setup()
     current_hero = Hero.Brigitte;
     brig_shield_location = EyePosition(EventPlayer())+FacingDirectionOf(EventPlayer())*0.85;
 
-    while(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+    while(MaxHealth() != base_health + base_armor + base_shield)
     {
-        health_set = true;
         async! apply_custom_health();
-        health_set = false;
-        Wait(0.1);
+        Wait(0.2);
     }
     //CreateBeamEffect(EventPlayer(),BeamType.GrappleBeam,brig_shield_location,brig_shield_location+FacingDirectionOf(EventPlayer())*max_ult_charge,Color.White,EffectRev.PositionAndRadius);
     //CreateHudText(EventPlayer(),"{0} {1}".Format([ult_charge,max_ult_charge]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
@@ -78,7 +76,11 @@ Player.Brigitte
         Damage(temp_players,null,0.01);
     }
 
-    ult_charge += 0.1*brig_passive_ult_gain;
+    if(IsGameInProgress())
+    {
+        ult_charge += 0.1*brig_passive_ult_gain;
+    }
+    
     if(ult_charge > max_ult_charge)
     {
         ult_charge = max_ult_charge;
@@ -111,11 +113,11 @@ Player.Brigitte
     {
         self_move_speed -= 50;
         SetMoveSpeed(EventPlayer(),self_move_speed);
-        WaitUntil(!IsFiringPrimary(),10);
+        WaitUntil(!IsFiringPrimary(),1);
         self_move_speed += 50;
         SetMoveSpeed(EventPlayer(),self_move_speed);
     }
-    MinWait();
+    Wait(0.1);
     LoopIf(HeroOf(EventPlayer()) == Hero.Brigitte);
 }
 
@@ -250,6 +252,7 @@ rule: "Brig Healing Ult Tracking"
 Event.OnHealingDealt
 Player.Brigitte
 if(EventAbility() != Button.Ability2)
+if(IsGameInProgress())
 {
     ult_charge += EventHealing()*brig_ult_gain_scalar;
 }

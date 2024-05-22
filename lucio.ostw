@@ -22,12 +22,10 @@ void lucio_setup()
     base_health = 200;
     current_hero = Hero.Lucio;
 
-    while(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+    while(MaxHealth() != base_health + base_armor + base_shield)
     {
-        health_set = true;
         async! apply_custom_health();
-        health_set = false;
-        Wait(0.1);
+        Wait(0.2);
     }
 }
 

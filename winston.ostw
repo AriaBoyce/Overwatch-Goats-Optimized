@@ -24,27 +24,21 @@ void winston_setup()
     role = 1;
     SetKnockbackReceived(EventPlayer(),200);
 
-    while(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+    while(MaxHealth() != base_health + base_armor + base_shield)
     {
-        health_set = true;
         async! apply_custom_health();
-        health_set = false;
-        Wait(0.1);
+        Wait(0.2);
     }
 }
 
 rule: "Winston Action"
 Event.OngoingPlayer
 Player.Winston
+if(IsUsingUltimate())
 {
-    if(IsUsingUltimate())
-    {
-        SetDamageDealt(EventPlayer(),80);
-        winston_ult_health = AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,38,true,true);
-        WaitUntil(!IsUsingUltimate(),100);
-        RemoveHealthPoolFromPlayer(winston_ult_health);
-        SetDamageDealt(EventPlayer(),(60/70)*100);
-    }
-    Wait(1/4);
-    LoopIf(HeroOf(EventPlayer()) == Hero.Winston);
+    SetDamageDealt(EventPlayer(),80);
+    winston_ult_health = AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,38,true,true);
+    WaitUntil(!IsUsingUltimate(),100);
+    RemoveHealthPoolFromPlayer(winston_ult_health);
+    SetDamageDealt(EventPlayer(),(60/70)*100);
 }

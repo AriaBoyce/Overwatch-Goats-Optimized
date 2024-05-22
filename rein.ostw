@@ -27,12 +27,10 @@ void rein_setup()
     role = 1;
     current_hero = Hero.Reinhardt;
 
-    while(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+    while(MaxHealth() != base_health + base_armor + base_shield)
     {
-        health_set = true;
         async! apply_custom_health();
-        health_set = false;
-        Wait(0.1);
+        Wait(0.2);
     }
     //CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([IsButtonHeld(EventPlayer(),Button.Ultimate),UltimateChargePercent(EventPlayer()),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
 }
@@ -59,7 +57,7 @@ Player.Reinhardt
     }
 
 
-    Wait(1/8);
+    Wait(1/4);
     LoopIf(HeroOf(EventPlayer()) == Hero.Reinhardt);
 }
 rule: "Rein Damage"
@@ -77,7 +75,14 @@ if(EventDamage() != null)
     }
     else if(EventAbility() == Button.Ability1)
     {
-        Damage(Victim(),Attacker(),925);
+        if(EventDamage() > 20)
+        {
+            Damage(Victim(),Attacker(),925);//direct pin damage
+        }
+        else
+        {
+            Damage(Victim(),Attacker(),150);//glance pin damage
+        }
     }
     else if(EventAbility() == Button.Ultimate && !EventWasCriticalHit())
     {

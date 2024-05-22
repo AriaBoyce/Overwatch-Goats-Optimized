@@ -29,13 +29,11 @@ void moira_setup()
     moira_heal_passive = (3.744/156)*100;
     moira_heal_damage = (12.14/156)*100;
     current_hero = Hero.Moira;
-    tick_rate = (1/62.5)*1;
-    while(MaxHealth() != base_health + base_armor + base_shield && health_set == false)
+    tick_rate = (1/62.5)*10;
+    while(MaxHealth() != base_health + base_armor + base_shield)
     {
-        health_set = true;
         async! apply_custom_health();
-        health_set = false;
-        Wait(0.1);
+        Wait(0.2);
     }
 }
 
