@@ -107,6 +107,15 @@ Event.OngoingPlayer
     Loop();
 }
 */
+
+rule: "Slow Mode"
+Event.OngoingGlobal
+if(ServerLoadAverage() >= 254)
+{
+    SetSlowMotion(25);
+    WaitUntil(ServerLoadAverage() < 250,5);
+    SetSlowMotion(100);
+}
 rule: "Spawn in"
 Event.OngoingPlayer
 if(HeroOf(EventPlayer()) != current_hero)
@@ -117,6 +126,7 @@ if(HeroOf(EventPlayer()) != current_hero)
     self_move_speed = 100;
     role = 0;
     tick_rate = 1/62.5;
+    DestroyHudText(zarya_hud_ref);
     SetKnockbackReceived(EventPlayer(),100);
     //remove health pools
     DestroyHudText(debug_text);
@@ -166,12 +176,6 @@ if(HeroOf(EventPlayer()) != current_hero)
     armor_tracking = HealthOfType(EventPlayer(),HealthType.Armor);
 }
 
-rule: "thing"
-Event.OngoingPlayer
-if(IsButtonHeld(EventPlayer(),Button.Interact))
-{
-    SetStatus(AllPlayers(),null,Status.Unkillable,1000);
-}
 rule: "Inbetween rounds"
 Event.OngoingPlayer
 if(!IsGameInProgress())
@@ -266,6 +270,45 @@ void apply_custom_health() "apply custom health"
     MinWait();
 }
 
+void apply_custom_health_fuction()
+{   
+    SetHealingReceived(EventPlayer(),0);
+    RemoveAllHealthPoolsFromPlayer(EventPlayer());
+    MinWait();
+    SetStatus(EventPlayer(),null,Status.Unkillable,5);
+    MinWait();
+    Damage(EventPlayer(),null,9999999);
+    SetPlayerHealth(EventPlayer(),1);
+    MinWait();
+
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,9999999,true,true);
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,9999999,true,true);
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Shields,9999999,true,true);
+
+    MinWait();
+    RemoveAllHealthPoolsFromPlayer(EventPlayer());
+    MinWait();
+    SetHealingReceived(EventPlayer(),100);
+    Heal(EventPlayer(),null,10000);
+    MinWait();
+
+    if (base_health > 0)
+    {
+        AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,base_health-1,true,true);
+    }
+
+    if (base_armor > 0)
+    {
+        AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,base_armor,true,true);
+    }
+
+    if (base_shield > 0)
+    {
+        AddHealthPoolToPlayer(EventPlayer(),HealthType.Shields,base_shield,true,true);
+    }
+    ClearStatus(EventPlayer(),Status.Unkillable);
+    MinWait();
+}
 
 rule: "Average of Average Tracking"
 Event.OngoingGlobal

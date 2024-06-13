@@ -85,6 +85,6 @@ Player.Dva
     {
         dva_ult_state = 0;
     }
-    Wait(0.1);
+    Wait(0.2);
     LoopIf(HeroOf(EventPlayer()) == Hero.Dva);
 }

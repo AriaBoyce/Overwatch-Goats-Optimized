@@ -47,10 +47,10 @@ void brig_setup()
     current_hero = Hero.Brigitte;
     brig_shield_location = EyePosition(EventPlayer())+FacingDirectionOf(EventPlayer())*0.85;
 
-    while(MaxHealth() != base_health + base_armor + base_shield)
+    while(MaxHealthOfType(EventPlayer(),HealthType.Health) != base_health || MaxHealthOfType(EventPlayer(),HealthType.Armor) != base_armor || MaxHealthOfType(EventPlayer(),HealthType.Shields) != base_shield)
     {
-        async! apply_custom_health();
-        Wait(0.2);
+        apply_custom_health_fuction();
+        Wait(0.1);
     }
     //CreateBeamEffect(EventPlayer(),BeamType.GrappleBeam,brig_shield_location,brig_shield_location+FacingDirectionOf(EventPlayer())*max_ult_charge,Color.White,EffectRev.PositionAndRadius);
     //CreateHudText(EventPlayer(),"{0} {1}".Format([ult_charge,max_ult_charge]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
@@ -117,7 +117,7 @@ Player.Brigitte
         self_move_speed += 50;
         SetMoveSpeed(EventPlayer(),self_move_speed);
     }
-    Wait(0.1);
+    Wait(0.12);
     LoopIf(HeroOf(EventPlayer()) == Hero.Brigitte);
 }
 

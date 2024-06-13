@@ -27,10 +27,10 @@ void rein_setup()
     role = 1;
     current_hero = Hero.Reinhardt;
 
-    while(MaxHealth() != base_health + base_armor + base_shield)
+    while(MaxHealthOfType(EventPlayer(),HealthType.Health) != base_health || MaxHealthOfType(EventPlayer(),HealthType.Armor) != base_armor || MaxHealthOfType(EventPlayer(),HealthType.Shields) != base_shield)
     {
-        async! apply_custom_health();
-        Wait(0.2);
+        apply_custom_health_fuction();
+        Wait(0.1);
     }
     //CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([IsButtonHeld(EventPlayer(),Button.Ultimate),UltimateChargePercent(EventPlayer()),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
 }
@@ -44,7 +44,7 @@ Player.Reinhardt
         //fire strike
         SetAbilityCharge(EventPlayer(),Button.Ability2,0);
         WaitUntil(IsUsingAbility2() == false,10);
-        SetAbilityCooldown(EventPlayer(),Button.Ability2,10);
+        SetAbilityCooldown(EventPlayer(),Button.Ability2,6);
     }
     else if(IsFiringSecondary())
     {
@@ -57,7 +57,7 @@ Player.Reinhardt
     }
 
 
-    Wait(1/4);
+    Wait(1/3);
     LoopIf(HeroOf(EventPlayer()) == Hero.Reinhardt);
 }
 rule: "Rein Damage"

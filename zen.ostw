@@ -13,10 +13,10 @@ void zen_setup()
     //SetDamageDealt(EventPlayer(),(46/48)*100);
     SetKnockbackDealt(EventPlayer(),10);
     //CreateHudText(AllPlayers(),null,null,discord_target,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
-    while(MaxHealth() != base_health + base_armor + base_shield)
+    while(MaxHealthOfType(EventPlayer(),HealthType.Health) != base_health || MaxHealthOfType(EventPlayer(),HealthType.Armor) != base_armor || MaxHealthOfType(EventPlayer(),HealthType.Shields) != base_shield)
     {
-        async! apply_custom_health();
-        Wait(0.2);
+        apply_custom_health_fuction();
+        Wait(0.1);
     }
 }
 
@@ -40,7 +40,7 @@ Player.Zenyatta
     */
     if(current_shield_health < max_shield_health)
     {
-        time_since_damage_shield += 1/10;
+        time_since_damage_shield += 1/4;
         if(time_since_damage_shield >= 3)
         {
             Heal(EventPlayer(),null,Min(2,max_shield_health-current_shield_health));
@@ -52,7 +52,7 @@ Player.Zenyatta
         }
     }
 
-    Wait(1/10);
+    Wait(1/4);
     LoopIf(HeroOf(EventPlayer()) == Hero.Zenyatta);
     
 }
@@ -60,7 +60,7 @@ Player.Zenyatta
 rule: "Zen Took Damage"
 Event.OnDamageTaken
 Player.Zenyatta
-if(Attacker() != Victim())
+if(EventAbility() != null)
 {
 	time_since_damage_shield = 0;
 	current_shield_health = HealthOfType(EventPlayer(),HealthType.Shields);
