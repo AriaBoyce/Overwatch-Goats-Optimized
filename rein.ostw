@@ -4,8 +4,8 @@ void rein_setup()
     //SetDamageDealt(EventPlayer(),25); done in custom game settings but listed here as well
     //shield health 2000
     //shield regen 200 up from 144
-    SetMaxHealth(EventPlayer(),(2000/1400)*100);
-    SetKnockbackReceived(EventPlayer(),200);
+    SetMaxHealth(EventPlayer(),(2000/1600)*100);
+    SetKnockbackReceived(EventPlayer(),166);
     //armor 200
     //health 300
     base_armor = 200;
@@ -77,7 +77,7 @@ if(EventDamage() != null)
     {
         if(EventDamage() > 20)
         {
-            Damage(Victim(),Attacker(),925);//direct pin damage
+            Damage(Victim(),Attacker(),848);//direct pin damage
         }
         else
         {

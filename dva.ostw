@@ -8,6 +8,7 @@ playervar define dva_ult_state;
 //health 400
 //armor 200
 //matrix cooldown 1s
+
 //regen 12.5->16%
 
 
@@ -23,12 +24,13 @@ void dva_setup()
     {
         async! apply_custom_health();
         MinWait();
+        MinWait();
         if(IsInAlternateForm())
         {
             break;
         }
     }
-    SetKnockbackReceived(EventPlayer(),200);
+    SetKnockbackReceived(EventPlayer(),166);
     dva_state = 0;
 }
 
@@ -84,6 +86,12 @@ Player.Dva
     else if(!IsUsingUltimate() && IsInAlternateForm())
     {
         dva_ult_state = 0;
+    }
+    if(IsUsingAbility2())
+    {
+        SetDamageDealt(EventPlayer(),90);
+        WaitUntil(!IsUsingAbility2(),10);
+        SetDamageDealt(EventPlayer(),100);
     }
     Wait(0.2);
     LoopIf(HeroOf(EventPlayer()) == Hero.Dva);

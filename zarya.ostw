@@ -16,7 +16,7 @@ void zarya_setup()
     tick_rate = (1/62.5)*15;
     role = 1;
     max_shield_health = 200;
-    SetKnockbackReceived(EventPlayer(),200);
+    SetKnockbackReceived(EventPlayer(),166);
     while(MaxHealthOfType(EventPlayer(),HealthType.Health) != base_health || MaxHealthOfType(EventPlayer(),HealthType.Armor) != base_armor || MaxHealthOfType(EventPlayer(),HealthType.Shields) != base_shield)
     {
         apply_custom_health_fuction();
