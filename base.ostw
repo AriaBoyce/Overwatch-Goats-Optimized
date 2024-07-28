@@ -18,6 +18,7 @@ playervar define time_since_damage_shield;
 globalvar define average_value;
 globalvar define average_count;
 playervar define health_ref;
+globalvar define tick_time = 1/62.5;
 
 import "ana.ostw";
 import "brig.ostw";
@@ -43,6 +44,19 @@ Event.OngoingGlobal
     if(debug_mode)
     {
         CreateHudText(null,null,null,"Server Load: {0}\nAverage: {1}\nPeak: {2}".Format([average_value,ServerLoadAverage(),ServerLoadPeak()]),Location.Right,0,Color.White,Color.White,Color.White,HudTextRev.VisibleToAndString,Spectators.VisibleAlways);
+        CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(0,Team.Team1))/(PlayersInSlot(0,Team.Team1).base_armor+PlayersInSlot(0,Team.Team1).base_health+PlayersInSlot(0,Team.Team1).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Blue,HudTextRev.String,Spectators.VisibleAlways);
+        CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(1,Team.Team1))/(PlayersInSlot(1,Team.Team1).base_armor+PlayersInSlot(1,Team.Team1).base_health+PlayersInSlot(1,Team.Team1).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Blue,HudTextRev.String,Spectators.VisibleAlways);
+        CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(2,Team.Team1))/(PlayersInSlot(2,Team.Team1).base_armor+PlayersInSlot(2,Team.Team1).base_health+PlayersInSlot(2,Team.Team1).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Blue,HudTextRev.String,Spectators.VisibleAlways);
+        CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(3,Team.Team1))/(PlayersInSlot(3,Team.Team1).base_armor+PlayersInSlot(3,Team.Team1).base_health+PlayersInSlot(3,Team.Team1).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Blue,HudTextRev.String,Spectators.VisibleAlways);
+        CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(4,Team.Team1))/(PlayersInSlot(4,Team.Team1).base_armor+PlayersInSlot(4,Team.Team1).base_health+PlayersInSlot(4,Team.Team1).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Blue,HudTextRev.String,Spectators.VisibleAlways);
+        CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(5,Team.Team1))/(PlayersInSlot(5,Team.Team1).base_armor+PlayersInSlot(5,Team.Team1).base_health+PlayersInSlot(5,Team.Team1).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Blue,HudTextRev.String,Spectators.VisibleAlways);
+
+        CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(0,Team.Team2))/(PlayersInSlot(0,Team.Team2).base_armor+PlayersInSlot(0,Team.Team2).base_health+PlayersInSlot(0,Team.Team2).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Red,HudTextRev.String,Spectators.VisibleAlways);
+        CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(1,Team.Team2))/(PlayersInSlot(1,Team.Team2).base_armor+PlayersInSlot(1,Team.Team2).base_health+PlayersInSlot(1,Team.Team2).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Red,HudTextRev.String,Spectators.VisibleAlways);
+        CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(2,Team.Team2))/(PlayersInSlot(2,Team.Team2).base_armor+PlayersInSlot(2,Team.Team2).base_health+PlayersInSlot(2,Team.Team2).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Red,HudTextRev.String,Spectators.VisibleAlways);
+        CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(3,Team.Team2))/(PlayersInSlot(3,Team.Team2).base_armor+PlayersInSlot(3,Team.Team2).base_health+PlayersInSlot(3,Team.Team2).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Red,HudTextRev.String,Spectators.VisibleAlways);
+        CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(4,Team.Team2))/(PlayersInSlot(4,Team.Team2).base_armor+PlayersInSlot(4,Team.Team2).base_health+PlayersInSlot(4,Team.Team2).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Red,HudTextRev.String,Spectators.VisibleAlways);
+        CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(5,Team.Team2))/(PlayersInSlot(5,Team.Team2).base_armor+PlayersInSlot(5,Team.Team2).base_health+PlayersInSlot(5,Team.Team2).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Red,HudTextRev.String,Spectators.VisibleAlways);
     }
 }
 
@@ -230,6 +244,13 @@ if(role == 1)
     }
 }
 
+rule: "tewmp"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(),Button.Interact))
+{
+    Damage(EventPlayer(),null,50);
+}
+
 void apply_custom_health() "apply custom health"
 {   
     
@@ -308,7 +329,11 @@ void apply_custom_health_fuction()
         AddHealthPoolToPlayer(EventPlayer(),HealthType.Shields,base_shield,true,true);
     }
     ClearStatus(EventPlayer(),Status.Unkillable);
-    MinWait();
+    Wait(0.25);
+    EnableInspectorRecording();
+    SmallMessage(AllPlayers(),"{0}: Set Health to: {1}".Format([EventPlayer(),MaxHealth()]));
+    LogToInspector("{0}: Set Health to: {1}".Format([EventPlayer(),MaxHealth()]));
+    DisableInspectorRecording();
 }
 
 rule: "Average of Average Tracking"

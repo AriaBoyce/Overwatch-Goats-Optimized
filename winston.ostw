@@ -37,8 +37,26 @@ Player.Winston
 if(IsUsingUltimate())
 {
     SetDamageDealt(EventPlayer(),80);
-    winston_ult_health = AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,38,true,true);
-    WaitUntil(!IsUsingUltimate(),100);
-    RemoveHealthPoolFromPlayer(winston_ult_health);
+    RemoveAllHealthPoolsFromPlayer();
+    winston_ult_health = AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,252,true,true);
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,100,true,true);
+    Wait(10-tick_time*2);
+    define temp_health = HealthOfType(EventPlayer(),HealthType.Health);
+    define temp_armor = HealthOfType(EventPlayer(),HealthType.Armor);
+    MinWait();
+    RemoveAllHealthPoolsFromPlayer();
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,399,true,true);
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,100,true,true);
+    MinWait();
+    if(temp_armor < 100)
+    {
+        Damage(EventPlayer(),null,100-(temp_armor)+10);
+    }
+    if(temp_health < 400)
+    {
+        Damage(EventPlayer(),null,400-(temp_health));
+    }
+
+    //RemoveHealthPoolFromPlayer(winston_ult_health);
     SetDamageDealt(EventPlayer(),(60/70)*100);
 }
