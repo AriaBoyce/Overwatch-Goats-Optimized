@@ -88,8 +88,10 @@ Player.Brigitte
     SetUltimateCharge(EventPlayer(),Min(99,ult_charge/max_ult_charge*100));
 
 
-    if(IsButtonHeld(EventPlayer(),Button.Ultimate) && UltimateChargePercent(EventPlayer()) >= 99 && brig_rally_ref == null && IsAlive())
+    if(IsButtonHeld(EventPlayer(),Button.Ultimate) && UltimateChargePercent(EventPlayer()) >= 98 && brig_rally_ref == null && IsAlive())
     {
+        SetUltimateCharge(EventPlayer(),0);
+        ult_charge = -9999;
         brig_rally_ref = CreateEffect(AllPlayers(),Effect.Ring,Color.Yellow,PositionOf(),10,EffectRev.PositionAndRadius);
         brig_rally_timer = 10;
         self_move_speed += 30;
@@ -200,10 +202,8 @@ if(EventDamage() != null)
 {
     if(EventAbility() == Button.PrimaryFire && IsButtonHeld(Attacker(),Button.SecondaryFire))
     {
-        if(brig_shield_check)
-        {
-            SetStatus(Victim(),Attacker(),Status.Stunned,1);
-        }
+        SetStatus(Victim(),Attacker(),Status.Stunned,1);
+        SetAbilityCooldown(EventPlayer(),Button.PrimaryFire,6);
     }
     else if(brig_inspire == 0)
     {
