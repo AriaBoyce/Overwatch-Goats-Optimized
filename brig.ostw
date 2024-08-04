@@ -32,6 +32,7 @@ playervar define brig_rally_armor_ref;
 playervar define brig_rally_armor_amount;
 playervar define brig_passive_ult_gain;
 playervar define brig_ult_gain_scalar;
+playervar define brig_shield_time;
 
 void brig_setup()
 {
@@ -61,9 +62,14 @@ rule: "Brig Action"
 Event.OngoingPlayer
 Player.Brigitte
 {
-    brig_shield_location = EyePosition(EventPlayer())+FacingDirectionOf(EventPlayer())*0.85;
-    brig_shield_check = IsInLineOfSight(brig_shield_location,brig_shield_location+FacingDirectionOf(EventPlayer())*1.75,BarrierLOS.EnemyBarriersBlock);
-
+    if(IsButtonHeld(EventPlayer(),Button.SecondaryFire))
+    {
+        brig_shield_time = 0;
+    }
+    else
+    {
+        brig_shield_time += 0.12;
+    }
     if(IsUsingAbility2())
     {
         define temp_players = PlayersInViewAngle(EventPlayer(),TeamOf(EventPlayer()),10);
@@ -200,7 +206,8 @@ Event.OnDamageDealt
 Player.Brigitte
 if(EventDamage() != null)
 {
-    if(EventAbility() == Button.PrimaryFire && IsButtonHeld(Attacker(),Button.SecondaryFire))
+    //SmallMessage(AllPlayers(),"{0}:{1}".Format([EventAbility(),IsButtonHeld(Attacker(),Button.SecondaryFire)]));
+    if(EventAbility() == Button.PrimaryFire && (IsButtonHeld(EventPlayer(),Button.SecondaryFire) ||brig_shield_time < 0.25) && AbilityCooldown(Attacker(),Button.PrimaryFire) == 0)
     {
         SetStatus(Victim(),Attacker(),Status.Stunned,1);
         SetAbilityCooldown(EventPlayer(),Button.PrimaryFire,6);

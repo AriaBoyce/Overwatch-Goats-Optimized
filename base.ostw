@@ -29,6 +29,7 @@ import "rein.ostw";
 import "winston.ostw";
 import "zarya.ostw";
 import "zen.ostw";
+
 rule: "Hud Text"
 Event.OngoingGlobal
 {
@@ -214,7 +215,6 @@ if(!IsGameInProgress())
     }
 }
 
-
 rule: "Damage on occassion"
 Event.OngoingPlayer
 if(Health() < MaxHealth())
@@ -236,12 +236,12 @@ if(role == 1)
         if(armor_tracking > 0)
         {
             //armor is involved
-            Damage(Victim(),Attacker(),((EventDamage()+10)/0.75)-10);
+            Damage(Victim(),Attacker(),((EventDamage()+10)*0.25)-10);
         }
         else
         {
             //no armor
-            Damage(Victim(),Attacker(),EventDamage()/0.75);
+            Damage(Victim(),Attacker(),EventDamage()*0.25);
         }
     }
 }

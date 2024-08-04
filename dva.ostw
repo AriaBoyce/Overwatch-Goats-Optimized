@@ -42,6 +42,15 @@ if(dva_state == 0)
     dva_state = 1;
 }
 
+rule: "Dva Ult"
+Event.OngoingPlayer
+Player.Dva
+if(IsUsingUltimate())
+{
+    SetDamageDealt(EventPlayer(),20);
+    Wait(2);
+    SetDamageDealt(EventPlayer(),100);
+}
 rule: "Dva Action"
 Event.OngoingPlayer
 Player.Dva
@@ -80,20 +89,6 @@ Player.Dva
         }
         dva_state = 0;
         SetDamageDealt(EventPlayer(),100);
-    }
-
-    if(IsUsingUltimate() && IsInAlternateForm() && dva_ult_state == 0)
-    {
-        dva_ult_state = 1;
-        SetDamageDealt(EventPlayer(),20);
-        WaitAsync(duration: 2, action: () =>
-        {
-            SetDamageDealt(EventPlayer(),100);
-        });
-    }
-    else if(!IsUsingUltimate() && IsInAlternateForm())
-    {
-        dva_ult_state = 0;
     }
     if(IsUsingAbility2())
     {
