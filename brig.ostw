@@ -72,7 +72,7 @@ Player.Brigitte
     }
     if(IsUsingAbility2())
     {
-        define temp_players = PlayersInViewAngle(EventPlayer(),TeamOf(EventPlayer()),10);
+        define temp_players = PlayersInViewAngle(EventPlayer(),TeamOf(EventPlayer()),90);
         if(temp_players.brig_rally_armor_amount > 0)
         {
             RemoveHealthPoolFromPlayer(temp_players.brig_rally_armor_ref);
@@ -114,6 +114,11 @@ Player.Brigitte
             async brig_rally_2();
         }
         
+    }
+
+    if(IsBetweenRounds() || !IsGameInProgress())
+    {
+        ult_charge = 0;
     }
 
     //brig shield bash distance
@@ -241,6 +246,7 @@ Player.Brigitte
 if(EventAbility() == Button.Ability2)
 {
     SetAbilityCharge(EventPlayer(),Button.Ability2,0);
+    SetAbilityCooldown(EventPlayer(),Button.Ability2,100);
     define temp_heal = 150;
     temp_heal -= Min(MaxHealth(Healee()) - Health(Healee()),150);
     Heal(Healee(),Healer(),150 - temp_heal);

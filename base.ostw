@@ -132,12 +132,15 @@ if(ServerLoadAverage() >= 254)
     WaitUntil(ServerLoadAverage() < 250,5);
     SetSlowMotion(100);
 }
+
+
 rule: "Spawn in"
 Event.OngoingPlayer
 if(HeroOf(EventPlayer()) != current_hero)
 {
     SetAbility1Enabled(EventPlayer(),true);
     SetAbility2Enabled(EventPlayer(),true);
+    SetJumpVerticalSpeed(EventPlayer(),100);
     base_armor = 0;
     base_health = 0;
     base_shield = 0;
@@ -197,22 +200,20 @@ if(HeroOf(EventPlayer()) != current_hero)
 rule: "Inbetween rounds"
 Event.OngoingPlayer
 if(!IsGameInProgress())
+if(IsBetweenRounds())
 {
-    if(setup_complete == true)
-    {
-        Respawn(AllDeadPlayers());
-        AllPlayers().brig_rally_armor_amount = 0;
-        Wait(10);
-        WaitUntil(IsInSpawnRoom(EventPlayer()),100);
-        RemoveAllHealthPoolsFromPlayer();
-        MinWait();
-        SetMaxHealth(EventPlayer(),100.1);
-        MinWait();
-        SetMaxHealth(EventPlayer(),100);
-        Heal(EventPlayer(),null,999999);
-        setup_complete = false;
-        current_hero = null;
-    }
+    Respawn(AllDeadPlayers());
+    AllPlayers().brig_rally_armor_amount = 0;
+    Wait(10);
+    WaitUntil(IsInSpawnRoom(EventPlayer()),100);
+    RemoveAllHealthPoolsFromPlayer();
+    MinWait();
+    SetMaxHealth(EventPlayer(),100.1);
+    MinWait();
+    SetMaxHealth(EventPlayer(),100);
+    Heal(EventPlayer(),null,999999);
+    setup_complete = false;
+    current_hero = null;
 }
 
 rule: "Damage on occassion"
