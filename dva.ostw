@@ -96,6 +96,16 @@ Player.Dva
         WaitUntil(!IsUsingAbility2(),10);
         SetDamageDealt(EventPlayer(),100);
     }
+    else if(IsFiringPrimary())
+    {
+        self_move_speed -= 28.5;
+        SetMoveSpeed(EventPlayer(),self_move_speed);
+        self_move_speed += 28.5;
+    }
+    else
+    {
+        SetMoveSpeed(EventPlayer(),self_move_speed);
+    }
     Wait(0.2);
     LoopIf(HeroOf(EventPlayer()) == Hero.Dva);
 }

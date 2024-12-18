@@ -46,7 +46,6 @@ void brig_setup()
     base_health = 199.9;
     base_shield = 0;
     current_hero = Hero.Brigitte;
-    SetDamageDealt(EventPlayer(),(35/45)*100);
     SetHealingDealt(EventPlayer(),1);
     brig_shield_location = EyePosition(EventPlayer())+FacingDirectionOf(EventPlayer())*0.85;
 
@@ -84,6 +83,14 @@ Player.Brigitte
         Damage(temp_players,null,0.01);
     }
 
+    if(IsFiringPrimary() && !IsFiringSecondary())
+    {
+        SetDamageDealt(EventPlayer(),(35/45)*100);
+    }
+    else
+    {
+        SetDamageDealt(EventPlayer(),100);
+    }
     if(IsGameInProgress())
     {
         ult_charge += 0.1*brig_passive_ult_gain;
@@ -216,13 +223,13 @@ if(EventDamage() != null)
     //SmallMessage(AllPlayers(),"{0}:{1}".Format([EventAbility(),IsButtonHeld(Attacker(),Button.SecondaryFire)]));
     if(EventAbility() == Button.PrimaryFire && (IsButtonHeld(EventPlayer(),Button.SecondaryFire) ||brig_shield_time < 0.25) && AbilityCooldown(Attacker(),Button.PrimaryFire) == 0)
     {
-        Damage(Victim(),Attacker(),14.28);
+        //Damage(Victim(),Attacker(),14.28);
         SetStatus(Victim(),Attacker(),Status.Stunned,1);
         SetAbilityCooldown(EventPlayer(),Button.PrimaryFire,6);
     }
     else if(EventAbility() == Button.Ability1)
     {
-        Damage(Victim(),Attacker(),20);
+        //Damage(Victim(),Attacker(),20);
     }
     else if(brig_inspire == 0)
     {

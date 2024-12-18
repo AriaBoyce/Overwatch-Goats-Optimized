@@ -157,7 +157,7 @@ if(HeroOf(EventPlayer()) != current_hero)
     {
         //debug_text = CreateHudText(EventPlayer(),null,null,"{0}\n{1}\n{2}".Format([$"Current Hero: {HeroOf()}\nStored Hero: {current_hero}\nMax Health: {MaxHealthOfType(EventPlayer(),HealthType.Health)}", $"Max Armor: {MaxHealthOfType(EventPlayer(),HealthType.Armor)}\nMax Shields: {MaxHealthOfType(EventPlayer(),HealthType.Shields)}\nGoal Health: {base_health}", $"Goal Armor: {base_armor}\nGoal Shields: {base_shield}"]),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.DefaultVisibility);
     }
-    CreateHudText(EventPlayer(),null,null,temp_damage_test,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
+    CreateHudText(EventPlayer(),null,null,fall_time,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
     //CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
     if(HeroOf(EventPlayer()) == Hero.Ana)
     {
@@ -350,8 +350,6 @@ if(IsButtonHeld(EventPlayer(),Button.Interact))
     MinWait();
     Damage(LastCreatedEntity(),null,150);
     CreateDummyBot(Hero.Roadhog,Team.Team2,0,EventPlayer(),EventPlayer());
-    Wait(1);
-    StartHoldingButton(LastCreatedEntity(),Button.PrimaryFire);
 }
 globalvar define temp_damage_test = 0;
 rule: "Damage Test"
@@ -366,4 +364,16 @@ if(temp_damage_test > 0)
 {
     Wait(6);
     temp_damage_test = 0;
+}
+
+globalvar define fall_time;
+rule: "falling"
+Event.OngoingPlayer
+if(!IsOnGround())
+{
+    fall_time += 0.1;
+    Wait(0.1);
+    LoopIf(!IsOnGround());
+    Wait(1);
+    fall_time = 0;
 }

@@ -131,3 +131,10 @@ Player.Lucio
         Damage(Victim(),Attacker(),13/0.55);
     }
 }
+
+rule: "Testing"
+Event.OngoingPlayer
+if(IsUsingUltimate())
+{
+    
+}
