@@ -1,6 +1,7 @@
 import "base.ostw";
-//healing per shot 70->75
-//damage per shot 70->75
+playervar define sleep_dart_use;
+//healing per shot 70->75 
+//OK damage per shot 75
 //ammo 15->14
 //sleep dart duration 5->6 seconds
 //sleep dart cooldown 14->12 seconds
@@ -24,6 +25,7 @@ void ana_setup()
     base_health = 200;
     base_shield = 0;
     self_move_speed = 100;
+    sleep_dart_use = null;
     while(MaxHealthOfType(EventPlayer(),HealthType.Health) != base_health || MaxHealthOfType(EventPlayer(),HealthType.Armor) != base_armor || MaxHealthOfType(EventPlayer(),HealthType.Shields) != base_shield)
     {
         apply_custom_health_fuction();
@@ -33,24 +35,53 @@ void ana_setup()
     //get health to 200 by setting health to 80% in custom game settings
 }
 
-rule: "Ana Sleep Dart"
+rule: "Ana Damage"
 Event.OnDamageDealt
 Player.Ana
-if(EventAbility() == Button.Ability1)
 {
-    Wait(3);
-    if(HasStatus(Victim(),Status.Asleep))
+    if(EventAbility() == Button.Ability2)
     {
-        ClearStatus(Victim(),Status.Asleep);
-        MinWait();
-        SetStatus(Victim(),null,Status.Asleep,3);
+        Damage(Victim(),Attacker(),10);
     }
+    else if(EventAbility() == Button.Ability1)
+    {
+        sleep_dart_use = Victim();
+    }
+}
+
+rule: "Ana Sleep Dart"
+Player.Ana
+if(sleep_dart_use != null)
+{
+    Wait(2.9);
+    if(HasStatus(sleep_dart_use,Status.Asleep))
+    {
+        ClearStatus(sleep_dart_use,Status.Asleep);
+        MinWait();
+
+        if(sleep_dart_use.role == 1)
+        {
+            SetStatus(sleep_dart_use,null,Status.Asleep,3.1);
+        }
+        else
+        {
+            SetStatus(sleep_dart_use,null,Status.Asleep,6.2);
+        }
+    }
+    sleep_dart_use = null;
 }
 
 rule: "Ana Nano Heal"
 Event.OnHealingDealt
 Player.Ana
-if(EventAbility() == Button.Ultimate)
+if(EventAbility() != Button.PrimaryFire)
 {
-    Damage(Healee(),null,EventHealing()*2);
+    if(EventAbility() == Button.Ability2)
+    {
+        Heal(Healee(),Healer(),10);
+    }
+    else if(EventAbility() == Button.Ultimate)
+    {
+        Damage(Healee(),null,EventHealing()*2);
+    }
 }

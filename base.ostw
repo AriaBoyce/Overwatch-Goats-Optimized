@@ -147,6 +147,8 @@ if(HeroOf(EventPlayer()) != current_hero)
     self_move_speed = 100;
     role = 0;
     tick_rate = 1/62.5;
+    SetHealingDealt(EventPlayer(),100);
+    SetDamageDealt(EventPlayer(),100);
     DestroyHudText(zarya_hud_ref);
     SetKnockbackReceived(EventPlayer(),100);
     //remove health pools
@@ -155,6 +157,7 @@ if(HeroOf(EventPlayer()) != current_hero)
     {
         //debug_text = CreateHudText(EventPlayer(),null,null,"{0}\n{1}\n{2}".Format([$"Current Hero: {HeroOf()}\nStored Hero: {current_hero}\nMax Health: {MaxHealthOfType(EventPlayer(),HealthType.Health)}", $"Max Armor: {MaxHealthOfType(EventPlayer(),HealthType.Armor)}\nMax Shields: {MaxHealthOfType(EventPlayer(),HealthType.Shields)}\nGoal Health: {base_health}", $"Goal Armor: {base_armor}\nGoal Shields: {base_shield}"]),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.DefaultVisibility);
     }
+    CreateHudText(EventPlayer(),null,null,temp_damage_test,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
     //CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
     if(HeroOf(EventPlayer()) == Hero.Ana)
     {
@@ -216,15 +219,6 @@ if(IsBetweenRounds())
     current_hero = null;
 }
 
-rule: "Damage on occassion"
-Event.OngoingPlayer
-if(Health() < MaxHealth())
-{
-    Damage(EventPlayer(),null,0.01);
-    Heal(EventPlayer(),null,0.01);
-    Wait(2.4);
-    LoopIfConditionIsTrue();
-}
 
 rule: "Armor Tracking and tank headshot"
 Event.OnDamageTaken
@@ -345,4 +339,31 @@ Event.OngoingGlobal
 
     Wait(1);
     Loop();
+}
+
+rule: "Spawn Bot"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(),Button.Interact))
+{
+    DestroyAllDummyBots();
+    CreateDummyBot(Hero.Ana,Team.Team1,1,EventPlayer(),EventPlayer());
+    MinWait();
+    Damage(LastCreatedEntity(),null,150);
+    CreateDummyBot(Hero.Roadhog,Team.Team2,0,EventPlayer(),EventPlayer());
+    Wait(1);
+    StartHoldingButton(LastCreatedEntity(),Button.PrimaryFire);
+}
+globalvar define temp_damage_test = 0;
+rule: "Damage Test"
+Event.OnDamageDealt
+{
+    temp_damage_test += EventDamage();
+}
+
+rule: "IDK"
+Event.OngoingPlayer
+if(temp_damage_test > 0)
+{
+    Wait(6);
+    temp_damage_test = 0;
 }

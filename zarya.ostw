@@ -65,20 +65,6 @@ Player.Zarya
         SetAbility2Enabled(EventPlayer(), true);
     }
 
-    if(current_shield_health < max_shield_health)
-    {
-        time_since_damage_shield += tick_rate;
-        if(time_since_damage_shield >= 3)
-        {
-            Heal(EventPlayer(),null,Min(20*tick_rate,max_shield_health-current_shield_health));
-            current_shield_health += Min(20*tick_rate,max_shield_health-current_shield_health);
-            if(current_shield_health > max_shield_health)
-            {
-                current_shield_health = max_shield_health;
-            }
-        }
-    }
-
     Wait(tick_rate);
     LoopIf(HeroOf(EventPlayer()) == Hero.Zarya);
 }

@@ -1,6 +1,6 @@
 import "base.ostw";
 
-//rally armor 100
+//rally armor 150
 //shield bash cooldown 6 seconds
 //600 shield health
 
@@ -39,13 +39,15 @@ void brig_setup()
     role = 0;
     ult_charge = 0;
     max_ult_charge = 2500;
-    brig_passive_ult_gain = WorkshopSettingReal("Settings","Brig Passive Ult Gain",1,0,2,0);
-    brig_ult_gain_scalar = WorkshopSettingReal("Settings","Brig Ult Scalar",1,0,2,1);
+    brig_passive_ult_gain = WorkshopSettingReal("Brig","Brig Passive Ult Gain",1,0,2,0);
+    brig_ult_gain_scalar = WorkshopSettingReal("Brig","Brig Ult Scalar",1,0,2,1);
     self_move_speed = 100;
     base_armor = 50;
     base_health = 199.9;
     base_shield = 0;
     current_hero = Hero.Brigitte;
+    SetDamageDealt(EventPlayer(),(35/45)*100);
+    SetHealingDealt(EventPlayer(),1);
     brig_shield_location = EyePosition(EventPlayer())+FacingDirectionOf(EventPlayer())*0.85;
 
     while(MaxHealthOfType(EventPlayer(),HealthType.Health) != base_health || MaxHealthOfType(EventPlayer(),HealthType.Armor) != base_armor || MaxHealthOfType(EventPlayer(),HealthType.Shields) != base_shield)
@@ -214,8 +216,13 @@ if(EventDamage() != null)
     //SmallMessage(AllPlayers(),"{0}:{1}".Format([EventAbility(),IsButtonHeld(Attacker(),Button.SecondaryFire)]));
     if(EventAbility() == Button.PrimaryFire && (IsButtonHeld(EventPlayer(),Button.SecondaryFire) ||brig_shield_time < 0.25) && AbilityCooldown(Attacker(),Button.PrimaryFire) == 0)
     {
+        Damage(Victim(),Attacker(),14.28);
         SetStatus(Victim(),Attacker(),Status.Stunned,1);
         SetAbilityCooldown(EventPlayer(),Button.PrimaryFire,6);
+    }
+    else if(EventAbility() == Button.Ability1)
+    {
+        Damage(Victim(),Attacker(),20);
     }
     else if(brig_inspire == 0)
     {
@@ -235,7 +242,7 @@ if(brig_inspire == 1)
 {
     define list_of_players = PlayersWithinRadius(PositionOf(EventPlayer()),20,TeamOf(EventPlayer()),RadiusLOS.Surfaces);
     StopHealOverTime(list_of_players.brig_inspire_ref);
-    list_of_players.brig_inspire_ref = StartHealOverTime(list_of_players,EventPlayer(),5,14.5);
+    list_of_players.brig_inspire_ref = StartHealOverTime(list_of_players,EventPlayer(),5,16);
     Wait(1);
     brig_inspire = 0;
 }

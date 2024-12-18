@@ -21,42 +21,6 @@ void zen_setup()
 }
 
 
-rule: "Zen Action"
-Event.OngoingPlayer
-Player.Zenyatta
-{
-    /*
-    if(IsUsingAbility2() && discord_target == null)
-    {
-        define temp_list = AllPlayers(OppositeTeamOf(TeamOf(EventPlayer())));
-        Damage(temp_list,EventPlayer(),0.05);
-    }
-    else if(!IsUsingAbility2() && discord_target != null)
-    {
-        SmallMessage(AllPlayers(),"Discord Cleared");
-        StopDamageModification(discord_ref);
-        discord_target = null;
-    }
-    */
-    if(current_shield_health < max_shield_health)
-    {
-        time_since_damage_shield += 1/4;
-        if(time_since_damage_shield >= 3)
-        {
-            Heal(EventPlayer(),null,Min(2,max_shield_health-current_shield_health));
-            current_shield_health += Min(2,max_shield_health-current_shield_health);
-            if(current_shield_health > max_shield_health)
-            {
-                current_shield_health = max_shield_health;
-            }
-        }
-    }
-
-    Wait(1/4);
-    LoopIf(HeroOf(EventPlayer()) == Hero.Zenyatta);
-    
-}
-
 rule: "Zen Took Damage"
 Event.OnDamageTaken
 Player.Zenyatta
