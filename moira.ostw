@@ -84,9 +84,20 @@ Player.Moira
 rule: "Moira Damage"
 Event.OnDamageDealt
 Player.Moira
-if(EventAbility() == Button.SecondaryFire)
 {
-    moira_resource += moira_heal_damage*tick_rate;
+    if(EventAbility() == Button.SecondaryFire)
+    {
+        moira_resource += moira_heal_damage*tick_rate;
+    }
+    else if(EventAbility() == Button.Ability2)
+    {
+        Damage(Victim(),Attacker(),EventDamage()*0.3);
+    }
+    else if(EventAbility() == Button.Ultimate)
+    {
+        Damage(Victim(),Attacker(),EventDamage()*0.07);
+    }
+    
 }
 
 rule: "Moira Heal"

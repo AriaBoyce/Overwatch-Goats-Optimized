@@ -1,6 +1,7 @@
 import "base.ostw";
 playervar define rein_goal_shield;
 playervar define rein_live_shield;
+playervar define rein_ult_damage = false;
 void rein_setup()
 {
     //SetDamageDealt(EventPlayer(),25); done in custom game settings but listed here as well
@@ -47,6 +48,7 @@ Player.Reinhardt
     {
         //fire strike
         SetAbilityCharge(EventPlayer(),Button.Ability2,0);
+        SetDamageDealt(EventPlayer(),83);
         WaitUntil(IsUsingAbility2() == false,10);
         SetAbilityCooldown(EventPlayer(),Button.Ability2,6);
     }
@@ -59,8 +61,37 @@ Player.Reinhardt
         self_move_speed += 28;
         SetMoveSpeed(EventPlayer(),self_move_speed);
     }
+    else if(IsFiringPrimary())
+    {
+        SetDamageDealt(EventPlayer(),70);
+    }
+    else if(IsUsingAbility1())
+    {
+        SetDamageDealt(EventPlayer(),100);
+    }
+    else if(!IsUsingUltimate())
+    {
+        rein_ult_damage = false;
+    }
 
 
     Wait(1/3);
     LoopIf(HeroOf(EventPlayer()) == Hero.Reinhardt);
+}
+rule: "Rein Ult Check"
+Event.OngoingPlayer
+Player.Reinhardt
+if(IsButtonHeld(EventPlayer(),Button.Ultimate))
+if(rein_ult_damage == false)
+{
+    SetDamageDealt(EventPlayer(),25);
+    rein_ult_damage = true;
+}
+rule: "Rein Damage"
+Event.OnDamageDealt
+Player.Reinhardt
+if(EventAbility() == Button.Ultimate)
+if(!EventWasCriticalHit())
+{
+    Damage(Victim(),Attacker(),EventDamage()*12);
 }

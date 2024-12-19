@@ -3,6 +3,7 @@ import "base.ostw";
 playervar define team_in_range;
 playervar define team_out_range;
 playervar define team_minus_lucio;
+playervar define changed_to_heal;
 //beat health 750->500
 //self heal penalty 60->30%
 //base move 25->30%
@@ -39,6 +40,7 @@ Player.Lucio
     //speed boost
     if(IsInAlternateForm())
     {
+        changed_to_heal = false;
         if(IsUsingAbility2())//speed amp
         {
             self_move_speed += 6.3;
@@ -91,8 +93,9 @@ Player.Lucio
 
 
     }
-    else//heal
+    else if (changed_to_heal == false)//heal
     {
+        changed_to_heal = true;
         SetMoveSpeed(EventPlayer(),self_move_speed);
         for(define i = 0; i < 5; i++)
         {
@@ -108,23 +111,15 @@ Player.Lucio
     LoopIf(HeroOf(EventPlayer()) == Hero.Lucio);
 }
 
-rule: "Lucio Self Heal"
-Event.OnHealingTaken
-Player.Lucio
-if(EventAbility() != null)
-if(Healer() == EventPlayer())
-if(!IsUsingAbility2())
-{
-    Heal(Healee(),Healee(),EventHealing()*0.23);
-}
-
 rule: "Lucio Damage"
 Event.OnDamageDealt
 Player.Lucio
 {
+    //12.1 base
+    //add 7.9
     if(EventAbility() == Button.PrimaryFire)
     {
-        Damage(Victim(),Attacker(),10.1/0.55);
+        Damage(Victim(),Attacker(),7.9/0.55);
     }
     else if(EventAbility() == Button.Melee)
     {

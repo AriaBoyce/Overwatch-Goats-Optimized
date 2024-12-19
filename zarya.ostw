@@ -68,12 +68,3 @@ Player.Zarya
     Wait(tick_rate);
     LoopIf(HeroOf(EventPlayer()) == Hero.Zarya);
 }
-
-rule: "Zarya Took Damage"
-Event.OnDamageTaken
-Player.Zarya
-if(EventAbility() != null)
-{
-	time_since_damage_shield = 0;
-	current_shield_health = HealthOfType(EventPlayer(),HealthType.Shields);
-}
