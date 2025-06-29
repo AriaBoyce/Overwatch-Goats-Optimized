@@ -17,14 +17,11 @@ void zarya_setup()
     role = 1;
     max_shield_health = 200;
     SetKnockbackReceived(EventPlayer(),166);
-    current_shield_health = HealthOfType(EventPlayer(),HealthType.Shields);
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,200,true,true);
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Shields,200,true,true);
     //SetMaxHealth(EventPlayer(),100);
 
-    while(MaxHealthOfType(EventPlayer(),HealthType.Health) != base_health || MaxHealthOfType(EventPlayer(),HealthType.Armor) != base_armor || MaxHealthOfType(EventPlayer(),HealthType.Shields) != base_shield)
-    {
-        apply_custom_health_fuction();
-        Wait(0.1);
-    }
+
 }
 
 rule: "Zarya Action"

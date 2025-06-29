@@ -22,12 +22,7 @@ void lucio_setup()
     self_move_speed = 100;
     base_health = 200;
     current_hero = Hero.Lucio;
-
-    while(MaxHealthOfType(EventPlayer(),HealthType.Health) != base_health || MaxHealthOfType(EventPlayer(),HealthType.Armor) != base_armor || MaxHealthOfType(EventPlayer(),HealthType.Shields) != base_shield)
-    {
-        apply_custom_health_fuction();
-        Wait(0.1);
-    }
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,175,true,true);
 }
 
 rule: "Lucio Action"

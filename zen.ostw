@@ -10,45 +10,9 @@ void zen_setup()
     base_armor = 0;
     current_hero = Hero.Zenyatta;
     max_shield_health = 150;
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,25,true,true);
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Shields,125,true,true);
     //SetDamageDealt(EventPlayer(),(46/48)*100);
     SetKnockbackDealt(EventPlayer(),10);
     //CreateHudText(AllPlayers(),null,null,discord_target,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
-    while(MaxHealthOfType(EventPlayer(),HealthType.Health) != base_health || MaxHealthOfType(EventPlayer(),HealthType.Armor) != base_armor || MaxHealthOfType(EventPlayer(),HealthType.Shields) != base_shield)
-    {
-        apply_custom_health_fuction();
-        Wait(0.1);
-    }
 }
-
-
-rule: "Zen Took Damage"
-Event.OnDamageTaken
-Player.Zenyatta
-if(EventAbility() != null)
-{
-	time_since_damage_shield = 0;
-	current_shield_health = HealthOfType(EventPlayer(),HealthType.Shields);
-}
-/*
-rule: "Zen Damage"
-Event.OnDamageDealt
-Player.Zenyatta
-if(EventAbility() == null)
-{
-    //base damage = 48
-    //armor damage = 36
-
-
-
-    
-    //discord damage = 60
-    //discord armor damage = 24
-    
-    if(EventDamage() == 0.06 || EventDamage() == 0.024)
-    {
-        SmallMessage(AllPlayers(),"Discord Set");
-        discord_target = Victim();
-        discord_ref = StartDamageModification(Victim(),AllPlayers(),104,DamageModificationRev.None);
-    }
-}
-*/

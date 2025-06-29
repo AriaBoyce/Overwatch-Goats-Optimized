@@ -49,11 +49,6 @@ void brig_setup()
     SetHealingDealt(EventPlayer(),1);
     brig_shield_location = EyePosition(EventPlayer())+FacingDirectionOf(EventPlayer())*0.85;
 
-    while(MaxHealthOfType(EventPlayer(),HealthType.Health) != base_health || MaxHealthOfType(EventPlayer(),HealthType.Armor) != base_armor || MaxHealthOfType(EventPlayer(),HealthType.Shields) != base_shield)
-    {
-        apply_custom_health_fuction();
-        Wait(0.1);
-    }
     //CreateBeamEffect(EventPlayer(),BeamType.GrappleBeam,brig_shield_location,brig_shield_location+FacingDirectionOf(EventPlayer())*max_ult_charge,Color.White,EffectRev.PositionAndRadius);
     //CreateHudText(EventPlayer(),"{0} {1}".Format([ult_charge,max_ult_charge]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
     //ud_ref = CreateHudText(EventPlayer(),null,null,"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n{0}{1}{2}".Format(["                                                                                                                 ","                                                              ",RoundToInteger( EventPlayer().ult_charge/EventPlayer().max_ult_charge*100)]),Location.Left,0,Color.White,Color.Black,Color.White,HudTextRev.String,Spectators.VisibleNever);

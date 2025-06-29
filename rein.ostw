@@ -2,11 +2,14 @@ import "base.ostw";
 playervar define rein_goal_shield;
 playervar define rein_live_shield;
 playervar define rein_ult_damage = false;
+
+playervar define hp_scalar = 100;
 void rein_setup()
 {
     //SetDamageDealt(EventPlayer(),25); done in custom game settings but listed here as well
     //shield health 2000
     //shield regen 200 up from 144
+    //CreateHudText(EventPlayer(),null,null,"{0}\n{1}".Format([IsButtonHeld(EventPlayer(),Button.SecondaryFire),IsFiringSecondary()]),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
     rein_goal_shield = WorkshopSettingReal("Rein","Rein Shield Health Goal",2000,0,2500,0);
     rein_live_shield = WorkshopSettingReal("Rein","Rein Shield Health Live",1500,0,2500,0);
     SetMaxHealth(EventPlayer(),(rein_goal_shield/rein_live_shield)*100);
@@ -31,12 +34,7 @@ void rein_setup()
     //no tank passive
     role = 1;
     current_hero = Hero.Reinhardt;
-
-    while(MaxHealthOfType(EventPlayer(),HealthType.Health) != base_health || MaxHealthOfType(EventPlayer(),HealthType.Armor) != base_armor || MaxHealthOfType(EventPlayer(),HealthType.Shields) != base_shield)
-    {
-        apply_custom_health_fuction();
-        Wait(0.1);
-    }
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,266.67,true,true);
     //CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([IsButtonHeld(EventPlayer(),Button.Ultimate),UltimateChargePercent(EventPlayer()),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
 }
 
@@ -76,7 +74,7 @@ Player.Reinhardt
 
 
     Wait(1/3);
-    LoopIf(HeroOf(EventPlayer()) == Hero.Reinhardt);
+    //LoopIf(HeroOf(EventPlayer()) == Hero.Reinhardt);
 }
 rule: "Rein Ult Check"
 Event.OngoingPlayer

@@ -20,15 +20,12 @@ void winston_setup()
     base_armor = 100;
     SetMaxHealth(EventPlayer(),(600/650)*100);
     SetDamageDealt(EventPlayer(),(60/70)*100);
+    SetMaxAmmo(EventPlayer(),0,100);
     current_hero = Hero.Winston;
     role = 1;
     SetKnockbackReceived(EventPlayer(),166);
-
-    while(MaxHealthOfType(EventPlayer(),HealthType.Health) != base_health || MaxHealthOfType(EventPlayer(),HealthType.Armor) != base_armor || MaxHealthOfType(EventPlayer(),HealthType.Shields) != base_shield)
-    {
-        apply_custom_health_fuction();
-        Wait(0.1);
-    }
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,15.38,true,true);
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,546.16,true,true);
 }
 
 rule: "Winston Action"

@@ -30,11 +30,17 @@ import "winston.ostw";
 import "zarya.ostw";
 import "zen.ostw";
 
+rule: "temp"
+Event.OngoingPlayer
+if(IsButtonHeld(EventPlayer(),Button.Interact))
+{
+    Damage(EventPlayer(),null,100);
+}
 rule: "Hud Text"
 Event.OngoingGlobal
 {
     
-    debug_mode = false;
+    debug_mode = true;
     DisableInspectorRecording();
     //Wait(5);
     //SetMatchTime(5);
@@ -149,13 +155,15 @@ if(HeroOf(EventPlayer()) != current_hero)
     tick_rate = 1/62.5;
     SetHealingDealt(EventPlayer(),100);
     SetDamageDealt(EventPlayer(),100);
+    SetMaxHealth(EventPlayer(),100);
     DestroyHudText(zarya_hud_ref);
     SetKnockbackReceived(EventPlayer(),100);
+    RemoveAllHealthPoolsFromPlayer();
     //remove health pools
     DestroyHudText(debug_text);
     if(debug_mode)
     {
-        //debug_text = CreateHudText(EventPlayer(),null,null,"{0}\n{1}\n{2}".Format([$"Current Hero: {HeroOf()}\nStored Hero: {current_hero}\nMax Health: {MaxHealthOfType(EventPlayer(),HealthType.Health)}", $"Max Armor: {MaxHealthOfType(EventPlayer(),HealthType.Armor)}\nMax Shields: {MaxHealthOfType(EventPlayer(),HealthType.Shields)}\nGoal Health: {base_health}", $"Goal Armor: {base_armor}\nGoal Shields: {base_shield}"]),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.DefaultVisibility);
+        debug_text = CreateHudText(EventPlayer(),null,null,"{0}\n{1}\n{2}".Format([$"Current Hero: {HeroOf()}\nStored Hero: {current_hero}\nMax Health: {MaxHealthOfType(EventPlayer(),HealthType.Health)}", $"Max Armor: {MaxHealthOfType(EventPlayer(),HealthType.Armor)}\nMax Shields: {MaxHealthOfType(EventPlayer(),HealthType.Shields)}\nGoal Health: {base_health}", $"Goal Armor: {base_armor}\nGoal Shields: {base_shield}"]),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.DefaultVisibility);
     }
     //CreateHudText(EventPlayer(),null,null,IsUsingUltimate(),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
     //CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);

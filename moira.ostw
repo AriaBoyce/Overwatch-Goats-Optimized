@@ -30,11 +30,8 @@ void moira_setup()
     moira_heal_damage = (12.14/156)*100;
     current_hero = Hero.Moira;
     tick_rate = (1/62.5)*20;
-    while(MaxHealthOfType(EventPlayer(),HealthType.Health) != base_health || MaxHealthOfType(EventPlayer(),HealthType.Armor) != base_armor || MaxHealthOfType(EventPlayer(),HealthType.Shields) != base_shield)
-    {
-        apply_custom_health_fuction();
-        Wait(0.1);
-    }
+
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,175,true,true);
 }
 
 rule: "Moira Action"

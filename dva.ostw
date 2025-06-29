@@ -15,21 +15,14 @@ playervar define dva_ult_state;
 void dva_setup()
 {
     dva_state = 2;
-    base_armor = 200;
-    base_health = 400;
+    base_armor = 400;
+    base_health = 800;
     base_shield = 0;
     dva_ult_state = 1;
     role = 1;
-    while(MaxHealth() != 600)
-    {
-        async! apply_custom_health();
-        MinWait();
-        MinWait();
-        if(IsInAlternateForm())
-        {
-            break;
-        }
-    }
+    //etMaxHealth(EventPlayer(),(200/225)*100);
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,75,true,true);
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,575,true,true);
     SetKnockbackReceived(EventPlayer(),166);
     dva_state = 0;
 }
@@ -55,40 +48,23 @@ rule: "Dva Action"
 Event.OngoingPlayer
 Player.Dva
 {
-    //health check
-    if(IsInAlternateForm() && dva_state == 0)
+    if(IsInAlternateForm())
     {
-        while(MaxHealth() != 150)
-        {
-            base_armor = 0;
-            base_health = 150;
-            async! apply_custom_health();
-            MinWait();
-            if(!IsInAlternateForm())
-            {
-                break;
-            }
-        }
+        SetMaxHealth(EventPlayer(),(300/175)*100);
+        RemoveAllHealthPoolsFromPlayer();
         dva_state = 1;
-        SetDamageDealt(EventPlayer(),100);
     }
-    else if(!IsInAlternateForm() && dva_state == 1)
+    else if(dva_state == 1)
     {
-        base_armor = 200;
-        base_health = 400;
-        while(MaxHealth() != 600)
+        if(!IsInAlternateForm())
         {
-            health_set = true;
-            async!  apply_custom_health();
-            health_set = false;
+            SetMaxHealth(EventPlayer(),100);
+            AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,75,true,true);
+            AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,575,true,true);
             MinWait();
-            if(IsInAlternateForm())
-            {
-                break;
-            }
+            Heal(EventPlayer(),null,18);
+            dva_state = 2;
         }
-        dva_state = 0;
-        SetDamageDealt(EventPlayer(),100);
     }
     if(IsUsingAbility2())
     {

@@ -26,11 +26,7 @@ void ana_setup()
     base_shield = 0;
     self_move_speed = 100;
     sleep_dart_use = null;
-    while(MaxHealthOfType(EventPlayer(),HealthType.Health) != base_health || MaxHealthOfType(EventPlayer(),HealthType.Armor) != base_armor || MaxHealthOfType(EventPlayer(),HealthType.Shields) != base_shield)
-    {
-        apply_custom_health_fuction();
-        Wait(0.1);
-    }
+    AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,150,true,true);
     //CreateHudText(AllPlayers(),"{0}:{1}:{2}".Format([heal_test,heal_test_2,IsUsingAbility2()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
     //get health to 200 by setting health to 80% in custom game settings
 }
