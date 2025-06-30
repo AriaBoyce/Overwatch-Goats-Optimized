@@ -34,13 +34,19 @@ rule: "temp"
 Event.OngoingPlayer
 if(IsButtonHeld(EventPlayer(),Button.Interact))
 {
-    Damage(EventPlayer(),null,100);
+    CreateDummyBot(Hero.Zarya,Team.Team2,0,EventPlayer(),Forward());
+}
+
+rule: "temp 2"
+Event.OnDamageDealt
+{
+    SmallMessage(EventPlayer(),EventDamage());
 }
 rule: "Hud Text"
 Event.OngoingGlobal
 {
     
-    debug_mode = true;
+    debug_mode = false;
     DisableInspectorRecording();
     //Wait(5);
     //SetMatchTime(5);
@@ -165,7 +171,7 @@ if(HeroOf(EventPlayer()) != current_hero)
     {
         debug_text = CreateHudText(EventPlayer(),null,null,"{0}\n{1}\n{2}".Format([$"Current Hero: {HeroOf()}\nStored Hero: {current_hero}\nMax Health: {MaxHealthOfType(EventPlayer(),HealthType.Health)}", $"Max Armor: {MaxHealthOfType(EventPlayer(),HealthType.Armor)}\nMax Shields: {MaxHealthOfType(EventPlayer(),HealthType.Shields)}\nGoal Health: {base_health}", $"Goal Armor: {base_armor}\nGoal Shields: {base_shield}"]),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.DefaultVisibility);
     }
-    //CreateHudText(EventPlayer(),null,null,IsUsingUltimate(),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
+    //CreateHudText(AllPlayers(),null,null,Health(),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
     //CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
     if(HeroOf(EventPlayer()) == Hero.Ana)
     {

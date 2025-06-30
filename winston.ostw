@@ -21,6 +21,7 @@ void winston_setup()
     SetMaxHealth(EventPlayer(),(600/650)*100);
     SetDamageDealt(EventPlayer(),(60/70)*100);
     SetMaxAmmo(EventPlayer(),0,100);
+    SetAmmo(EventPlayer(),0,100);
     current_hero = Hero.Winston;
     role = 1;
     SetKnockbackReceived(EventPlayer(),166);
@@ -34,24 +35,25 @@ Player.Winston
 if(IsUsingUltimate())
 {
     SetDamageDealt(EventPlayer(),80);
-    RemoveAllHealthPoolsFromPlayer();
-    winston_ult_health = AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,252,true,true);
-    AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,100,true,true);
+    //RemoveAllHealthPoolsFromPlayer();
+    winston_ult_health = AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,353,true,true);
+    //AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,100,true,true);
     Wait(10-tick_time*2);
     define temp_health = HealthOfType(EventPlayer(),HealthType.Health);
     define temp_armor = HealthOfType(EventPlayer(),HealthType.Armor);
     MinWait();
-    RemoveAllHealthPoolsFromPlayer();
-    AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,399,true,true);
-    AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,100,true,true);
+    RemoveHealthPoolFromPlayer(winston_ult_health);
+    //RemoveAllHealthPoolsFromPlayer();
+    //AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,399,true,true);
+    //AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,100,true,true);
     MinWait();
     if(temp_armor < 100)
     {
-        Damage(EventPlayer(),null,100-(temp_armor)+10);
+        //amage(EventPlayer(),null,100-(temp_armor)+10);
     }
     if(temp_health < 400)
     {
-        Damage(EventPlayer(),null,400-(temp_health));
+        //Damage(EventPlayer(),null,400-(temp_health));
     }
 
     //RemoveHealthPoolFromPlayer(winston_ult_health);

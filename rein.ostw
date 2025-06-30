@@ -4,6 +4,8 @@ playervar define rein_live_shield;
 playervar define rein_ult_damage = false;
 
 playervar define hp_scalar = 100;
+
+playervar define rein_fire_strike_scalar = ((200/240)*100);
 void rein_setup()
 {
     //SetDamageDealt(EventPlayer(),25); done in custom game settings but listed here as well
@@ -46,7 +48,7 @@ Player.Reinhardt
     {
         //fire strike
         SetAbilityCharge(EventPlayer(),Button.Ability2,0);
-        SetDamageDealt(EventPlayer(),83);
+        SetDamageDealt(EventPlayer(),rein_fire_strike_scalar);
         WaitUntil(IsUsingAbility2() == false,10);
         SetAbilityCooldown(EventPlayer(),Button.Ability2,6);
     }
@@ -74,7 +76,7 @@ Player.Reinhardt
 
 
     Wait(1/3);
-    //LoopIf(HeroOf(EventPlayer()) == Hero.Reinhardt);
+    LoopIf(HeroOf(EventPlayer()) == Hero.Reinhardt);
 }
 rule: "Rein Ult Check"
 Event.OngoingPlayer
@@ -84,12 +86,4 @@ if(rein_ult_damage == false)
 {
     SetDamageDealt(EventPlayer(),25);
     rein_ult_damage = true;
-}
-rule: "Rein Damage"
-Event.OnDamageDealt
-Player.Reinhardt
-if(EventAbility() == Button.Ultimate)
-if(!EventWasCriticalHit())
-{
-    Damage(Victim(),Attacker(),EventDamage()*12);
 }

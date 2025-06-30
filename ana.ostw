@@ -27,7 +27,7 @@ void ana_setup()
     self_move_speed = 100;
     sleep_dart_use = null;
     AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,150,true,true);
-    //CreateHudText(AllPlayers(),"{0}:{1}:{2}".Format([heal_test,heal_test_2,IsUsingAbility2()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
+    //CreateHudText(AllPlayers(),"{0}".Format([role]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleAlways);
     //get health to 200 by setting health to 80% in custom game settings
 }
 
@@ -37,21 +37,23 @@ Player.Ana
 {
     if(EventAbility() == Button.Ability2)
     {
-        Damage(Victim(),Attacker(),10);
+        Damage(Victim(),Attacker(),25);
     }
     else if(EventAbility() == Button.Ability1)
     {
         sleep_dart_use = Victim();
     }
+    SetStatus(Victim(),null,Status.Asleep,100);
 }
 
 rule: "Ana Sleep Dart"
 Player.Ana
 if(sleep_dart_use != null)
 {
-    Wait(2.9);
+    Wait(2.8);
     if(HasStatus(sleep_dart_use,Status.Asleep))
     {
+        //Kill(sleep_dart_use,null);
         ClearStatus(sleep_dart_use,Status.Asleep);
         MinWait();
 
