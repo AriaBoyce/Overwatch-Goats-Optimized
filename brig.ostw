@@ -147,13 +147,13 @@ void brig_rally_1() playervar "Brig Rally 1"
         {
             break;
         }
-        list_of_players[i].brig_rally_armor_amount += 15;
-        if(list_of_players[i].brig_rally_armor_amount > 150)
+        list_of_players[i].brig_rally_armor_amount += 30;
+        if(list_of_players[i].brig_rally_armor_amount > 300)
         {
-            list_of_players[i].brig_rally_armor_amount = 150;
+            list_of_players[i].brig_rally_armor_amount = 300;
         }
         RemoveHealthPoolFromPlayer(list_of_players[i].brig_rally_armor_ref);
-        list_of_players[i].brig_rally_armor_ref = AddHealthPoolToPlayer(list_of_players[i],HealthType.Armor,list_of_players[i].brig_rally_armor_amount,false,true);
+        list_of_players[i].brig_rally_armor_ref = AddHealthPoolToPlayer(list_of_players[i],HealthType.Armor,list_of_players[i].brig_rally_armor_amount,0,1);
     }
     Wait(1/2);
     brig_rally_timer -= 0.5;
@@ -174,13 +174,13 @@ void brig_rally_2() playervar "Brig Rally 2"
         {
             break;
         }
-        list_of_players[i].brig_rally_armor_amount += 15;
-        if(list_of_players[i].brig_rally_armor_amount > 150)
+        list_of_players[i].brig_rally_armor_amount += 30;
+        if(list_of_players[i].brig_rally_armor_amount > 300)
         {
-            list_of_players[i].brig_rally_armor_amount = 150;
+            list_of_players[i].brig_rally_armor_amount = 300;
         }
         RemoveHealthPoolFromPlayer(list_of_players[i].brig_rally_armor_ref);
-        list_of_players[i].brig_rally_armor_ref = AddHealthPoolToPlayer(list_of_players[i],HealthType.Armor,list_of_players[i].brig_rally_armor_amount,false,true);
+        list_of_players[i].brig_rally_armor_ref = AddHealthPoolToPlayer(list_of_players[i],HealthType.Armor,list_of_players[i].brig_rally_armor_amount,0,1);
     }
     Wait(1/2);
     brig_rally_timer -= 0.5;
@@ -256,13 +256,13 @@ if(EventAbility() == Button.Ability2)
 {
     SetAbilityCharge(EventPlayer(),Button.Ability2,0);
     SetAbilityCooldown(EventPlayer(),Button.Ability2,100);
-    define temp_heal = 150;
-    temp_heal -= Min(MaxHealth(Healee()) - Health(Healee()),150);
-    Heal(Healee(),Healer(),150 - temp_heal);
-    ult_charge += 150 - temp_heal;
-    if(temp_heal > 75)
+    define temp_heal = 300;
+    temp_heal -= Min(MaxHealth(Healee()) - Health(Healee()),300);
+    Heal(Healee(),Healer(),300 - temp_heal);
+    ult_charge += 300 - temp_heal;
+    if(temp_heal > 150)
     {
-        temp_heal = 75;
+        temp_heal = 150;
     }
     brig_pack_ref = AddHealthPoolToPlayer(Healee(),HealthType.Armor,temp_heal,false,true);
     Wait(5);

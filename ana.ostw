@@ -43,14 +43,13 @@ Player.Ana
     {
         sleep_dart_use = Victim();
     }
-    SetStatus(Victim(),null,Status.Asleep,100);
 }
 
 rule: "Ana Sleep Dart"
 Player.Ana
 if(sleep_dart_use != null)
 {
-    Wait(2.8);
+    Wait(2.9);
     if(HasStatus(sleep_dart_use,Status.Asleep))
     {
         //Kill(sleep_dart_use,null);
@@ -59,11 +58,11 @@ if(sleep_dart_use != null)
 
         if(sleep_dart_use.role == 1)
         {
-            SetStatus(sleep_dart_use,null,Status.Asleep,3.1);
+            SetStatus(sleep_dart_use,null,Status.KnockedDown,6.2);
         }
         else
         {
-            SetStatus(sleep_dart_use,null,Status.Asleep,6.2);
+            SetStatus(sleep_dart_use,null,Status.Asleep,3.1);
         }
     }
     sleep_dart_use = null;

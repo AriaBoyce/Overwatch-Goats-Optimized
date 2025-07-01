@@ -30,18 +30,6 @@ import "winston.ostw";
 import "zarya.ostw";
 import "zen.ostw";
 
-rule: "temp"
-Event.OngoingPlayer
-if(IsButtonHeld(EventPlayer(),Button.Interact))
-{
-    CreateDummyBot(Hero.Zarya,Team.Team2,0,EventPlayer(),Forward());
-}
-
-rule: "temp 2"
-Event.OnDamageDealt
-{
-    SmallMessage(EventPlayer(),EventDamage());
-}
 rule: "Hud Text"
 Event.OngoingGlobal
 {
@@ -233,7 +221,6 @@ if(IsBetweenRounds())
     current_hero = null;
 }
 
-
 rule: "Armor Tracking and tank headshot"
 Event.OnDamageTaken
 if(role == 1)
@@ -245,7 +232,7 @@ if(role == 1)
         if(armor_tracking > 0)
         {
             //armor is involved
-            Damage(Victim(),Attacker(),((EventDamage()+10)*0.25)-10);
+            Damage(Victim(),Attacker(),((EventDamage()+7)*0.25)-7);
         }
         else
         {
@@ -253,6 +240,7 @@ if(role == 1)
             Damage(Victim(),Attacker(),EventDamage()*0.25);
         }
     }
+    armor_tracking = HealthOfType(EventPlayer(),HealthType.Armor);
 }
 
 void apply_custom_health() "apply custom health"

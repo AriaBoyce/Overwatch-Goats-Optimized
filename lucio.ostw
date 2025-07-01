@@ -114,7 +114,15 @@ Player.Lucio
     //add 7.9
     if(EventAbility() == Button.PrimaryFire)
     {
-        Damage(Victim(),Attacker(),7.9/0.55);
+        if(EventWasCriticalHit())
+        {
+            Damage(Victim(),Attacker(),7.9/0.275);
+        }
+        else
+        {
+            Damage(Victim(),Attacker(),7.9/0.55);
+        }
+        
     }
     else if(EventAbility() == Button.Melee)
     {
@@ -122,9 +130,10 @@ Player.Lucio
     }
 }
 
-rule: "Testing"
-Event.OngoingPlayer
-if(IsUsingUltimate())
+rule: "Lucio Heal"
+Event.OnHealingTaken
+Player.Lucio
+if(Healee() != Healer())
 {
-    
+    Heal(Healee(),null,EventHealing()*0.25);
 }

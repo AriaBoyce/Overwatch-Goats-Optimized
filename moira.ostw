@@ -62,6 +62,7 @@ Player.Moira
         self_move_speed -= 7.2;
         SetMoveSpeed(EventPlayer(),self_move_speed);
         SetAbility1Enabled(EventPlayer(),true);
+        Heal(EventPlayer(),null,2);
     }
     else
     {
@@ -97,12 +98,3 @@ Player.Moira
     
 }
 
-rule: "Moira Heal"
-Event.OnHealingDealt
-Player.Moira
-{
-    if(EventAbility() == Button.PrimaryFire)
-    {
-        Heal(Healee(),Healer(),EventHealing()*0.14285);
-    }
-}

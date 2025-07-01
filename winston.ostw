@@ -59,3 +59,4 @@ if(IsUsingUltimate())
     //RemoveHealthPoolFromPlayer(winston_ult_health);
     SetDamageDealt(EventPlayer(),(60/70)*100);
 }
+
