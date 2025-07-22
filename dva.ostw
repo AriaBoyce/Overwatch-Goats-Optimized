@@ -20,7 +20,7 @@ void dva_setup()
     base_shield = 0;
     dva_ult_state = 1;
     role = 1;
-    //etMaxHealth(EventPlayer(),(200/225)*100);
+    //SetMaxHealth(EventPlayer(),(200/225)*100);
     AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,75,true,true);
     AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,575,true,true);
     SetKnockbackReceived(EventPlayer(),166);

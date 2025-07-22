@@ -60,7 +60,6 @@ Event.OngoingGlobal
         //CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(5,Team.Team2))/(PlayersInSlot(5,Team.Team2).base_armor+PlayersInSlot(5,Team.Team2).base_health+PlayersInSlot(5,Team.Team2).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Red,HudTextRev.String,Spectators.VisibleAlways);
     }
 }
-
 rule: "On Death"
 Event.OngoingPlayer
 {

@@ -256,15 +256,15 @@ if(EventAbility() == Button.Ability2)
 {
     SetAbilityCharge(EventPlayer(),Button.Ability2,0);
     SetAbilityCooldown(EventPlayer(),Button.Ability2,100);
-    define temp_heal = 300;
-    temp_heal -= Min(MaxHealth(Healee()) - Health(Healee()),300);
-    Heal(Healee(),Healer(),300 - temp_heal);
-    ult_charge += 300 - temp_heal;
-    if(temp_heal > 150)
+    define temp_heal = 150;
+    temp_heal -= Min(MaxHealth(Healee()) - Health(Healee()),150);
+    Heal(Healee(),Healer(),150 - temp_heal);
+    ult_charge += 150 - temp_heal;
+    if(temp_heal > 75)
     {
-        temp_heal = 150;
+        temp_heal = 75;
     }
-    brig_pack_ref = AddHealthPoolToPlayer(Healee(),HealthType.Armor,temp_heal,false,true);
+    brig_pack_ref = AddHealthPoolToPlayer(Healee(),HealthType.Armor,temp_heal*2,false,true);
     Wait(5);
     RemoveHealthPoolFromPlayer(brig_pack_ref);
     Wait(1);
