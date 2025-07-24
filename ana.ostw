@@ -58,7 +58,7 @@ if(sleep_dart_use != null)
 
         if(sleep_dart_use.role == 1)
         {
-            SetStatus(sleep_dart_use,null,Status.KnockedDown,6.2);
+            SetStatus(sleep_dart_use,null,Status.KnockedDown,4.1);
         }
         else
         {
