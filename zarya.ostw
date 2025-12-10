@@ -16,7 +16,7 @@ void zarya_setup()
     tick_rate = (1/62.5)*15;
     role = 1;
     max_shield_health = 200;
-    SetKnockbackReceived(EventPlayer(),166);
+    SetKnockbackReceived(EventPlayer(),125);
     AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,200,true,true);
     AddHealthPoolToPlayer(EventPlayer(),HealthType.Shields,200,true,true);
     //SetMaxHealth(EventPlayer(),100);

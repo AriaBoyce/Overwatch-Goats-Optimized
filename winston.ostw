@@ -24,7 +24,7 @@ void winston_setup()
     SetAmmo(EventPlayer(),0,100);
     current_hero = Hero.Winston;
     role = 1;
-    SetKnockbackReceived(EventPlayer(),166);
+    SetKnockbackReceived(EventPlayer(),125);
     AddHealthPoolToPlayer(EventPlayer(),HealthType.Armor,15.38,true,true);
     AddHealthPoolToPlayer(EventPlayer(),HealthType.Health,546.16,true,true);
 }

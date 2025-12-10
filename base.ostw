@@ -29,99 +29,14 @@ import "rein.ostw";
 import "winston.ostw";
 import "zarya.ostw";
 import "zen.ostw";
-
-rule: "Hud Text"
-Event.OngoingGlobal
-{
-    
-    debug_mode = false;
-    DisableInspectorRecording();
-    //Wait(5);
-    //SetMatchTime(5);
-    //Wait(7);
-    //SetMatchTime(1);
-    //Wait(2);
-    //SetMatchTime(5);
-    if(debug_mode)
-    {
-        CreateHudText(null,null,null,"Server Load: {0}\nAverage: {1}\nPeak: {2}".Format([average_value,ServerLoadAverage(),ServerLoadPeak()]),Location.Right,0,Color.White,Color.White,Color.White,HudTextRev.VisibleToAndString,Spectators.VisibleAlways);
-        //CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(0,Team.Team1))/(PlayersInSlot(0,Team.Team1).base_armor+PlayersInSlot(0,Team.Team1).base_health+PlayersInSlot(0,Team.Team1).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Blue,HudTextRev.String,Spectators.VisibleAlways);
-        //CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(1,Team.Team1))/(PlayersInSlot(1,Team.Team1).base_armor+PlayersInSlot(1,Team.Team1).base_health+PlayersInSlot(1,Team.Team1).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Blue,HudTextRev.String,Spectators.VisibleAlways);
-        //CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(2,Team.Team1))/(PlayersInSlot(2,Team.Team1).base_armor+PlayersInSlot(2,Team.Team1).base_health+PlayersInSlot(2,Team.Team1).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Blue,HudTextRev.String,Spectators.VisibleAlways);
-        //CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(3,Team.Team1))/(PlayersInSlot(3,Team.Team1).base_armor+PlayersInSlot(3,Team.Team1).base_health+PlayersInSlot(3,Team.Team1).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Blue,HudTextRev.String,Spectators.VisibleAlways);
-        //CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(4,Team.Team1))/(PlayersInSlot(4,Team.Team1).base_armor+PlayersInSlot(4,Team.Team1).base_health+PlayersInSlot(4,Team.Team1).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Blue,HudTextRev.String,Spectators.VisibleAlways);
-        //CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(5,Team.Team1))/(PlayersInSlot(5,Team.Team1).base_armor+PlayersInSlot(5,Team.Team1).base_health+PlayersInSlot(5,Team.Team1).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Blue,HudTextRev.String,Spectators.VisibleAlways);
-
-        //CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(0,Team.Team2))/(PlayersInSlot(0,Team.Team2).base_armor+PlayersInSlot(0,Team.Team2).base_health+PlayersInSlot(0,Team.Team2).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Red,HudTextRev.String,Spectators.VisibleAlways);
-        //CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(1,Team.Team2))/(PlayersInSlot(1,Team.Team2).base_armor+PlayersInSlot(1,Team.Team2).base_health+PlayersInSlot(1,Team.Team2).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Red,HudTextRev.String,Spectators.VisibleAlways);
-        //CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(2,Team.Team2))/(PlayersInSlot(2,Team.Team2).base_armor+PlayersInSlot(2,Team.Team2).base_health+PlayersInSlot(2,Team.Team2).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Red,HudTextRev.String,Spectators.VisibleAlways);
-        //CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(3,Team.Team2))/(PlayersInSlot(3,Team.Team2).base_armor+PlayersInSlot(3,Team.Team2).base_health+PlayersInSlot(3,Team.Team2).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Red,HudTextRev.String,Spectators.VisibleAlways);
-        //CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(4,Team.Team2))/(PlayersInSlot(4,Team.Team2).base_armor+PlayersInSlot(4,Team.Team2).base_health+PlayersInSlot(4,Team.Team2).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Red,HudTextRev.String,Spectators.VisibleAlways);
-        //CreateHudText(null,null,null,"{0}".Format([MaxHealth(PlayersInSlot(5,Team.Team2))/(PlayersInSlot(5,Team.Team2).base_armor+PlayersInSlot(5,Team.Team2).base_health+PlayersInSlot(5,Team.Team2).base_shield)]),Location.Left,0,Color.White,Color.White,Color.Red,HudTextRev.String,Spectators.VisibleAlways);
-    }
-}
+import "debug.ostw";
 rule: "On Death"
 Event.OngoingPlayer
 {
     ult_charge = 0;
     brig_rally_timer = 0;
 }
-/*
-rule: "Random Actions"
-Event.OngoingPlayer
-{
-    WaitUntil(IsOnObjective(EventPlayer()),1000);
-    define temp = RandomInteger(0,8);
-    switch(temp)
-    {
-        case 0:
-        {
-            StartHoldingButton(EventPlayer(),Button.Ability1);
-        }
-        case 1:
-        {
-            StartHoldingButton(EventPlayer(),Button.Ability2);
-        }
-        case 2:
-        {
-            StartHoldingButton(EventPlayer(),Button.Crouch);
-        }
-        case 3:
-        {
-            StartHoldingButton(EventPlayer(),Button.Jump);
-        }
-        case 4:
-        {
-            StartHoldingButton(EventPlayer(),Button.Melee);
-        }
-        case 5:
-        {
-            StartHoldingButton(EventPlayer(),Button.PrimaryFire);
-        }
-        case 6:
-        {
-            StartHoldingButton(EventPlayer(),Button.SecondaryFire);
-        }
-        case 7:
-        {
-            StartHoldingButton(EventPlayer(),Button.Ultimate);
-        }
-        case 8:
-        {
-            StopHoldingButton(EventPlayer(),Button.Ability1);
-            StopHoldingButton(EventPlayer(),Button.Ability2);
-            StopHoldingButton(EventPlayer(),Button.Crouch);
-            StopHoldingButton(EventPlayer(),Button.Jump);
-            StopHoldingButton(EventPlayer(),Button.Melee);
-            StopHoldingButton(EventPlayer(),Button.PrimaryFire);
-            StopHoldingButton(EventPlayer(),Button.SecondaryFire);
-            StopHoldingButton(EventPlayer(),Button.Ultimate);
-        }
-    }
-    Wait(1/10);
-    Loop();
-}
-*/
+
 
 rule: "Slow Mode"
 Event.OngoingGlobal
@@ -153,13 +68,6 @@ if(HeroOf(EventPlayer()) != current_hero)
     SetKnockbackReceived(EventPlayer(),100);
     RemoveAllHealthPoolsFromPlayer();
     //remove health pools
-    DestroyHudText(debug_text);
-    if(debug_mode)
-    {
-        debug_text = CreateHudText(EventPlayer(),null,null,"{0}\n{1}\n{2}".Format([$"Current Hero: {HeroOf()}\nStored Hero: {current_hero}\nMax Health: {MaxHealthOfType(EventPlayer(),HealthType.Health)}", $"Max Armor: {MaxHealthOfType(EventPlayer(),HealthType.Armor)}\nMax Shields: {MaxHealthOfType(EventPlayer(),HealthType.Shields)}\nGoal Health: {base_health}", $"Goal Armor: {base_armor}\nGoal Shields: {base_shield}"]),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.DefaultVisibility);
-    }
-    //CreateHudText(AllPlayers(),null,null,Health(),Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
-    //CreateHudText(EventPlayer(),"{0}\n{1}\n{2}".Format([ServerLoad(),ServerLoadAverage(),ServerLoadPeak()]),null,null,Location.Left,0,Color.White,Color.White,Color.White,HudTextRev.String,Spectators.VisibleNever);
     if(HeroOf(EventPlayer()) == Hero.Ana)
     {
         ana_setup();
@@ -199,6 +107,7 @@ if(HeroOf(EventPlayer()) != current_hero)
     current_hero = HeroOf(EventPlayer());
     setup_complete = true;
     armor_tracking = HealthOfType(EventPlayer(),HealthType.Armor);
+    CreateHudText(EventPlayer(),SpeedOf());
 }
 
 rule: "Inbetween rounds"
@@ -329,6 +238,7 @@ void apply_custom_health_fuction()
 
 rule: "Average of Average Tracking"
 Event.OngoingGlobal
+if(debug_mode > 0)
 {
     if(ServerLoadAverage() > 50)
     {
@@ -340,4 +250,5 @@ Event.OngoingGlobal
 
     Wait(1);
     Loop();
+    
 }

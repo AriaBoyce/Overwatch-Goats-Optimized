@@ -1,0 +1,155 @@
+import "base.ostw";
+
+//debug levels
+//0 none
+//1 server load
+//2 player stats
+//3 all player stats
+//4 automated testing
+
+rule: "Debug Start"
+Event.OngoingGlobal
+if(HasSpawned(PlayersInSlot(0,Team.Team1)))
+{
+    debug_mode = 3;
+
+    DisableInspectorRecording();
+    if(debug_mode >= 1)
+    {
+        CreateHudText(AllPlayers(),null,null,"(Load: {0}) (Average: {1}) (Stress Average: {2})".Format([ServerLoad(),ServerLoadAverage(),average_value]));
+    }
+    if(debug_mode == 2)
+    {
+        CreateHudText(PlayersInSlot(0,Team.Team1),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(0,Team.Team1))),create_health_string(PlayersInSlot(0,Team.Team1))]));
+        CreateHudText(PlayersInSlot(1,Team.Team1),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(1,Team.Team1))),create_health_string(PlayersInSlot(1,Team.Team1))]));
+        CreateHudText(PlayersInSlot(2,Team.Team1),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(2,Team.Team1))),create_health_string(PlayersInSlot(2,Team.Team1))]));
+        CreateHudText(PlayersInSlot(3,Team.Team1),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(3,Team.Team1))),create_health_string(PlayersInSlot(3,Team.Team1))]));
+        CreateHudText(PlayersInSlot(4,Team.Team1),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(4,Team.Team1))),create_health_string(PlayersInSlot(4,Team.Team1))]));
+        CreateHudText(PlayersInSlot(5,Team.Team1),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(5,Team.Team1))),create_health_string(PlayersInSlot(5,Team.Team1))]));
+
+        CreateHudText(PlayersInSlot(0,Team.Team2),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(0,Team.Team2))),create_health_string(PlayersInSlot(0,Team.Team2))]));
+        CreateHudText(PlayersInSlot(1,Team.Team2),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(1,Team.Team2))),create_health_string(PlayersInSlot(1,Team.Team2))]));
+        CreateHudText(PlayersInSlot(2,Team.Team2),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(2,Team.Team2))),create_health_string(PlayersInSlot(2,Team.Team2))]));
+        CreateHudText(PlayersInSlot(3,Team.Team2),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(3,Team.Team2))),create_health_string(PlayersInSlot(3,Team.Team2))]));
+        CreateHudText(PlayersInSlot(4,Team.Team2),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(4,Team.Team2))),create_health_string(PlayersInSlot(4,Team.Team2))]));
+        CreateHudText(PlayersInSlot(5,Team.Team2),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(5,Team.Team2))),create_health_string(PlayersInSlot(5,Team.Team2))]));
+    }
+    if(debug_mode >= 3)
+    {
+        CreateHudText(AllPlayers(),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(0,Team.Team1))),create_health_string(PlayersInSlot(0,Team.Team1))]));
+        CreateHudText(AllPlayers(),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(1,Team.Team1))),create_health_string(PlayersInSlot(1,Team.Team1))]));
+        CreateHudText(AllPlayers(),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(2,Team.Team1))),create_health_string(PlayersInSlot(2,Team.Team1))]));
+        CreateHudText(AllPlayers(),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(3,Team.Team1))),create_health_string(PlayersInSlot(3,Team.Team1))]));
+        CreateHudText(AllPlayers(),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(4,Team.Team1))),create_health_string(PlayersInSlot(4,Team.Team1))]));
+        CreateHudText(AllPlayers(),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(5,Team.Team1))),create_health_string(PlayersInSlot(5,Team.Team1))]));
+
+        CreateHudText(AllPlayers(),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(0,Team.Team2))),create_health_string(PlayersInSlot(0,Team.Team2))]));
+        CreateHudText(AllPlayers(),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(1,Team.Team2))),create_health_string(PlayersInSlot(1,Team.Team2))]));
+        CreateHudText(AllPlayers(),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(2,Team.Team2))),create_health_string(PlayersInSlot(2,Team.Team2))]));
+        CreateHudText(AllPlayers(),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(3,Team.Team2))),create_health_string(PlayersInSlot(3,Team.Team2))]));
+        CreateHudText(AllPlayers(),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(4,Team.Team2))),create_health_string(PlayersInSlot(4,Team.Team2))]));
+        CreateHudText(AllPlayers(),null,null,"{0} {1}".Format([HeroIconString(HeroOf(PlayersInSlot(5,Team.Team2))),create_health_string(PlayersInSlot(5,Team.Team2))]));
+    }
+
+    //lengthy automated testing
+    //run solo
+    if(debug_mode == 4)
+    {
+        define temp_player = PlayersInSlot(0,Team.Team1);
+        dva_testing(temp_player);
+        
+    }
+}
+
+String create_health_string(Player string_target)
+{
+    return "(Health: {0}) (Armor: {1}) (Shields: {2})".Format([HealthOfType(string_target,HealthType.Health),HealthOfType(string_target,HealthType.Armor),HealthOfType(string_target,HealthType.Shields)]);
+}
+
+void dva_testing(Player temp_player)
+{
+    define temp_value = 0;
+    Wait(1);
+    ForcePlayerHero(temp_player,Hero.Dva);
+    Wait(1);
+    temp_value = absolute_value(HealthOfType(temp_player,HealthType.Health),800,0.5);
+    if(temp_value != 0)
+    {
+        Inspector_Log("Dva: Health is off by {0}".Format([temp_value]));
+    }
+    MinWait();
+
+    temp_value = absolute_value(HealthOfType(temp_player,HealthType.Armor),400,0.5);
+    if(temp_value != 0)
+    {
+        Inspector_Log("Dva: Armor is off by {0}".Format([temp_value]));
+    }
+    MinWait();
+
+    temp_value = absolute_value(HealthOfType(temp_player,HealthType.Shields),0,0.5);
+    if(temp_value != 0)
+    {
+        Inspector_Log("Dva: Shields is off by {0}".Format([temp_value]));
+    }
+    MinWait();
+    Wait(1);
+    Teleport(temp_player,Vector(-16.5,0,-90.5));
+    SetFacing(temp_player,Vector(0.7,0.0,0.7),Relative.ToWorld);
+
+    //move speed test
+    StartThrottleInDirection(temp_player,Forward(),1,Relative.ToPlayer,ThrottleBehavior.ReplaceExistingThrottle,ThrottleRev.None);
+    Wait(0.5);
+    temp_value = absolute_value(SpeedOf(temp_player),5.5,0.01);
+    if(temp_value != 0)
+    {
+        Inspector_Log("Dva: Move Speed is off by {0}".Format([temp_value]));
+    }
+    StartThrottleInDirection(temp_player,Backward(),1,Relative.ToPlayer,ThrottleBehavior.ReplaceExistingThrottle,ThrottleRev.None);
+    Wait(0.5);
+    StopThrottleInDirection(temp_player);
+
+    //move speed while firing
+    StartHoldingButton(temp_player,Button.PrimaryFire);
+    StartThrottleInDirection(temp_player,Forward(),1,Relative.ToPlayer,ThrottleBehavior.ReplaceExistingThrottle,ThrottleRev.None);
+    Wait(0.5);
+    temp_value = absolute_value(SpeedOf(temp_player),2.75,0.01);
+    if(temp_value != 0)
+    {
+        Inspector_Log("Dva: Fire Speed is off by {0}".Format([temp_value]));
+    }
+    StartThrottleInDirection(temp_player,Backward(),1,Relative.ToPlayer,ThrottleBehavior.ReplaceExistingThrottle,ThrottleRev.None);
+    Wait(0.5);
+    StopThrottleInDirection(temp_player);
+    StopHoldingButton(temp_player,Button.PrimaryFire);
+
+    //boosters test
+    PressButton(temp_player,Button.Ability1);
+    Wait(0.5);
+    temp_value = absolute_value(SpeedOf(temp_player),12,0.01);
+    if(temp_value != 0)
+    {
+        Inspector_Log("Dva: Booster Speed is off by {0}".Format([temp_value]));
+    }
+    MinWait();
+    PressButton(temp_player,Button.Ability1);
+    Wait(0.25);
+    Teleport(temp_player,Vector(-16.5,0,-90.5));
+
+}
+
+//two values to compare and how far apart can they be
+Number absolute_value(define a, define b, define delta)
+{
+    if( AbsoluteValue(a-b) > delta)
+    {
+        return AbsoluteValue(a-b);
+    }
+    return 0;
+}
+
+void Inspector_Log(define string_input)
+{
+    EnableInspectorRecording();
+    LogToInspector(string_input);
+    DisableInspectorRecording();
+}

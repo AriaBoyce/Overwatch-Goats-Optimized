@@ -15,7 +15,7 @@ void rein_setup()
     rein_goal_shield = WorkshopSettingReal("Rein","Rein Shield Health Goal",2000,0,2500,0);
     rein_live_shield = WorkshopSettingReal("Rein","Rein Shield Health Live",1500,0,2500,0);
     SetMaxHealth(EventPlayer(),(rein_goal_shield/rein_live_shield)*100);
-    SetKnockbackReceived(EventPlayer(),166);
+    SetKnockbackReceived(EventPlayer(),125);
     //armor 200
     //health 300
     base_armor = 200;
