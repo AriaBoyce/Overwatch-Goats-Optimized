@@ -29,7 +29,7 @@ import "rein.ostw";
 import "winston.ostw";
 import "zarya.ostw";
 import "zen.ostw";
-import "debug.ostw";
+//import "debug.ostw";
 rule: "On Death"
 Event.OngoingPlayer
 {
@@ -107,7 +107,6 @@ if(HeroOf(EventPlayer()) != current_hero)
     current_hero = HeroOf(EventPlayer());
     setup_complete = true;
     armor_tracking = HealthOfType(EventPlayer(),HealthType.Armor);
-    CreateHudText(EventPlayer(),SpeedOf());
 }
 
 rule: "Inbetween rounds"

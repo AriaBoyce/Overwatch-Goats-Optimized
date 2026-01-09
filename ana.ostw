@@ -79,6 +79,6 @@ if(EventAbility() != Button.PrimaryFire)
     }
     else if(EventAbility() == Button.Ultimate)
     {
-        Damage(Healee(),null,EventHealing()*2);
+        Damage(Healee(),null,EventHealing());
     }
 }

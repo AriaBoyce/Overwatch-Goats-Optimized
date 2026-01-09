@@ -110,17 +110,17 @@ rule: "Lucio Damage"
 Event.OnDamageDealt
 Player.Lucio
 {
-    //12.1 base
-    //add 7.9
+    //11
+    //9
     if(EventAbility() == Button.PrimaryFire)
     {
         if(EventWasCriticalHit())
         {
-            Damage(Victim(),Attacker(),7.9/0.275);
+            Damage(Victim(),Attacker(),9/0.275);
         }
         else
         {
-            Damage(Victim(),Attacker(),7.9/0.55);
+            Damage(Victim(),Attacker(),9/0.55);
         }
         
     }
